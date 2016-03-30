@@ -1,0 +1,30 @@
+<div class="container">
+  <div class="jumbotron">    
+    <h2>Upload your spec file (XML):</h2>
+  </div>
+  <form name="myForm">
+    <div name="dropbox" ngf-drop ngf-select ng-model="files" class="drop-box" ngf-drag-over-class="'dragover'" 
+        ngf-multiple="true" ngf-allow-dir="true" ngf-accept="text/xml" ngf-pattern="'.xml'">
+          Drop XML metadata specification files here, or click to upload
+    </div>
+    
+    <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+
+    <div class="alert alert-danger" ng-show="myForm.dropbox.$error.pattern && enableErrorAlerts">
+      <a class="close" aria-label="close" ng-click="removeErrorAlerts()">&times;</a>
+      <strong>Error!</strong> The file you tried to upload does not have a XML format. Please upload a XML file.
+    </div>
+
+    <div class="alert alert-success" ng-hide="!files || files.length == 0">
+      <p>Files uploaded:</p>
+      <ul>
+        <li ng-repeat="f in files track by $index" style="font:smaller; list-style-type: none;">
+          <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+          {{f.name}} {{f.$error}} {{f.$errorParam}}
+          <span class="glyphicon glyphicon-remove remove-file-sym" ng-click="deleteFile(f.name)" aria-hidden="true"></span>
+        </li>
+      </ul>
+    </div>
+    <button type="button" class="btn btn-primary btn-lg" ng-click="goToApiSection()" ng-hide="!specUploaded">Continue</button>
+  </form>
+</div>

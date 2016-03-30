@@ -1,0 +1,22 @@
+.container{
+	text-align: initial;
+}
+.container table{
+	margin-top: 20px;
+}
+/*#page-description{
+	margin-top: 20px;
+	margin-bottom: 20px;
+	padding-bottom: 20px;
+	border-bottom: 1px solid #e5e5e5;
+}*/
+#search-group{
+	margin-bottom: 20px;
+}
+h2{
+	text-align: center;
+}
+.status-indicator{
+	cursor: default;
+	outline: none!important;
+}
