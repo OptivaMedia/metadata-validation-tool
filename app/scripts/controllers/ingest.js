@@ -113,9 +113,47 @@ angular.module('xmlvsApiValidationApp')
         }
     };
 
+    	// TODO: FINISHED GETTING KEYS FROM INGEST FILE. CLEAN FUNCTION 
+    	// AND CONTINUE VALIDATION vs SPEC
+    	// DO COMMIT FIRST THING IN THE MORNING!!!!!
     $scope.validateIngestFile = function(){
 		console.log("ENTRA-validateIngestFile()");
-    	
+    	var ingestAssets,
+    		assetAMS,
+    		assetAMSfieldsArrays = [],
+    		assetAppData,
+    		fieldsSingleArray = [],
+    		assetAppDataFieldsArrays = [];
+
+		if ( ingestService.getIngestObj() ) {    	
+			ingestAssets = ingestService.getIngestObj().Asset.Asset;
+			console.log("ingestAssets");
+			console.log(ingestAssets);
+			if ( ingestAssets ) {
+				$.each( ingestAssets, function ( index, asset ) {
+					assetAMS = asset.Metadata.AMS["@attributes"];
+					if ( assetAMS ) {
+						assetAMSfieldsArrays.push(Object.keys(assetAMS));
+					}
+					assetAppData = asset.Metadata["App_Data"];
+					if ( assetAppData ) {
+						if ( assetAppData.constructor === Array ) {
+							$.each( assetAppData, function ( index, appData ) {
+								if ( appData["@attributes"].Name ) {
+									fieldsSingleArray.push(appData["@attributes"].Name);
+								}
+							} );
+						} else if ( assetAppData.constructor !== Array && typeof assetAppData == 'object' ) {
+							fieldsSingleArray.push(assetAppData["@attributes"].Name);
+						}
+						assetAppDataFieldsArrays.push(fieldsSingleArray);
+					}
+					fieldsSingleArray = [];
+				} );
+				console.log("assetAppDataFieldsArrays");
+				console.log(assetAppDataFieldsArrays);
+			}
+	    }
     }
 
     $scope.goToResultsSection = function() {

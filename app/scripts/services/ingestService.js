@@ -22,10 +22,10 @@ angular.module('xmlvsApiValidationApp')
 	// Provides the ingest object as a Javascript object. 
 	ingest.getIngestObj = function() {
 		var resultObj = {};
-		if( ingest.getIngestObjType() == "VOD" ) {
+		if( ingest.getIngestObjType() === "VOD" ) {
 			resultObj = ingestObj.ADI;
 		}
-		else if( ingest.getIngestObjType() == "EPG" ) {
+		else if( ingest.getIngestObjType() === "EPG" ) {
 			resultObj = ingestObj.TV;
 		}else{
 			resultObj = ingestObj;
@@ -47,7 +47,7 @@ angular.module('xmlvsApiValidationApp')
 			type = "EPG";
 		}
 		return type;
-	}
+	};
 
 	// INGEST FILE OPERATIONS
 
