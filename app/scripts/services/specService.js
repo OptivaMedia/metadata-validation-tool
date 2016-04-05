@@ -11,7 +11,7 @@
  */
  
 angular.module('xmlvsApiValidationApp')
-  .service('specService', function() {
+  .service( 'specService', function () {
 	// Private spec object structure
 	var specObj = {};
 	// Private spec files structure
@@ -20,7 +20,7 @@ angular.module('xmlvsApiValidationApp')
 	// Public object to offer
 	var spec = {};
 	// Provides the specification object as a Javascript object. 
-	spec.getSpec = function() {
+	spec.getSpec = function () {
 		var resultSpec = {};
 		if( specObj.VODspec ) {
 			resultSpec = specObj.VODspec;
@@ -32,13 +32,13 @@ angular.module('xmlvsApiValidationApp')
 		}
 		return resultSpec;
 	};
-	spec.setSpec = function(newSpec) {
+	spec.setSpec = function ( newSpec ) {
 	  specObj = newSpec;
 	};
-	spec.unsetSpec = function() {
+	spec.unsetSpec = function () {
 	  specObj = {};
 	};
-	spec.getSpecType = function(){
+	spec.getSpecType = function () {
 		var type;
 		if( specObj.VODspec ) {
 			type = "VOD";
@@ -47,22 +47,28 @@ angular.module('xmlvsApiValidationApp')
 			type = "EPG";
 		}
 		return type;
-	}
+	};
+
+	// Service of field validation vs Specification (For both apiResponse 
+	// and ingest files).
+	spec.validateFieldsVsSpec = function () {
+
+	};
 
 	// SPEC FILE OPERATIONS
 
 	// Provides the specification object as a Javascript array. 
-	spec.getSpecFilesArray = function() {
+	spec.getSpecFilesArray = function () {
 		return specFilesArray;
 	};
 	// Set specification files array
-	spec.setSpecFilesArray = function(newSpecFilesArray) {
+	spec.setSpecFilesArray = function ( newSpecFilesArray ) {
 		specFilesArray = [];
 		specFilesArray = newSpecFilesArray;
 	};
-	spec.addSpecFile = function(specFile) {
+	spec.addSpecFile = function ( specFile ) {
 		specFilesArray.push(specFile);
 	};
 
 	return spec;
-});
+} );

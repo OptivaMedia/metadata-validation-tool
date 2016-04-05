@@ -48,7 +48,7 @@ angular.module('xmlvsApiValidationApp')
 	// Unset apiResponse files array
 	apiResponseService.unsetApiFilesArray = function(){
 		apiFilesArray = [];
-	}
+	};
 
 	return apiResponseService;
 });

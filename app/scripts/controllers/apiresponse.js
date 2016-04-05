@@ -84,21 +84,27 @@ angular.module('xmlvsApiValidationApp')
 				// Once the file has correctly been uploaded
 				read.onloadend = function(){
     				console.log("FUNCTION: onloadend");
-					var jsonObject =  $.parseJSON(read.result);
-				    if( jsonObject ){
+					try {
+						var jsonObject =  $.parseJSON(read.result);
+					    if( jsonObject ){
 
-				    	/*Local Storing operations*/
-				    	// Add Api Response object to local scope.
-				    	$scope.apiResponseObject = jsonObject;
-				    	// Enable file loaded flag.
-						$scope.apiResponseLoaded = true;
+					    	/*Local Storing operations*/
+					    	// Add Api Response object to local scope.
+					    	$scope.apiResponseObject = jsonObject;
+					    	// Enable file loaded flag.
+							$scope.apiResponseLoaded = true;
 
-						/*Persisting data operations.*/
-				    	// Add Api Response file to Api Response Files Array service object.
-				    	apiResponseService.setApiResponse($scope.apiResponseObject);
-				    	// Add Api Response file to Api Response Files Array service object.
-				    	apiResponseService.setApiFilesArray(files);
-				    }
+							/*Persisting data operations.*/
+					    	// Add Api Response file to Api Response Files Array service object.
+					    	apiResponseService.setApiResponse($scope.apiResponseObject);
+					    	// Add Api Response file to Api Response Files Array service object.
+					    	apiResponseService.setApiFilesArray(files);
+					    }
+					}
+					catch (err) { // Error in parsing xml
+					    console.log("err.message");
+					    console.log(err.message);
+					}    
 				}
             }
         }

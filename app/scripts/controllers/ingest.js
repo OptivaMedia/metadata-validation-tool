@@ -20,13 +20,12 @@ angular.module('xmlvsApiValidationApp')
   	// Call the env initialization routine
   	init();
   	
+  	// INTERNAL FUNCTIONS AND METHODS.
 
-	function init() {
+	function init () {
 		console.log("ENTRA-init()");
 		// Getting the uploadedFiles array
 		$scope.files = ingestService.getIngestFilesArray();
-		console.log("$scope.files - AFTER");
-		console.log($scope.files);
 		$scope.ingestFileUploaded = $.isEmptyObject(ingestService.getIngestObj()) ? false : true;
 	    // Error alerts enabled in initial state
 	    $scope.enableErrorAlerts = true;
@@ -40,90 +39,16 @@ angular.module('xmlvsApiValidationApp')
 		}
 	}
 
-	// Watching uploads from the user
-	$scope.$watch('files', function () {
-		console.log("$scope.$watch -> $scope.files");
-		// Enable alerts with every new file upload attempt
-    	$scope.enableErrorAlerts = true;
-		// Avoiding entering in the upload function when there's already a spec uploaded.
-			console.log("ingestService.getIngestObj() = ");
-			console.log(ingestService.getIngestObj());
-        if($.isEmptyObject(ingestService.getIngestObj())) {
-        	$scope.upload($scope.files);
-        }
-    });
-    $scope.$watch('file', function () {
-        if ($scope.file != null) {
-            $scope.files = [$scope.file]; 
-        }
-    });
-
-    $scope.removeErrorAlerts = function() {
-    	$scope.enableErrorAlerts = false;
-	}
-
-    // Delete file item from the file list.
-	$scope.deleteFile = function(fileName) {
-		console.log("ENTRA-deleteFile()");
-		$scope.files = $.grep($scope.files, function(fileObject) {
-			return fileObject.name != fileName;
-		});
-		// When the user deletes all files, unset specObj in specService
-		if($scope.files.length == 0){
-			ingestService.unsetIngestObj();
-			$scope.ingestFileUploaded = false;
-			//Disable API section and unset apiResponse data structures.
-			// disableApiResponseSection();
-		}
-		// Re-setting specService Spec array to be the result of the deletion
-		ingestService.setIngestFilesArray($scope.files);
-	}
-
-    $scope.upload = function (files) {
-		console.log("ENTRA-upload()");
-        if (files && files.length) {
-            for (var i = 0; i < files.length; i++) {
-				var file = files[i];
-
-				//Getting the content of the object File.
-				var read = new FileReader();
-
-				read.readAsBinaryString(file);
-
-				read.onloadend = function() {
-					// Enable next section and show continue button
-					// enableApiNavSection();
-					// FOR XML FILE
-					var xmlDoc = $.parseXML(read.result);
-					// Assuming xmlDoc is the XML DOM Document
-					// var xmlObject = JSON.stringify(xmlToJson(xmlDoc));
-					var xmlObject = xmlToJson(xmlDoc);
-					if(xmlObject){
-						console.log("Specification Object: ");
-						console.log(xmlObject);
-						// Changing flag to show 'continue' button
-						$scope.ingestFileUploaded = true;
-						// Making the spec available trough the specService
-						ingestService.setIngestObj(xmlObject);
-						// Updating filesSpecArray in specService
-						ingestService.addIngestFile(file);
-					}
-				}
-            }
-        }
-    };
-
-    	// TODO: FINISHED GETTING KEYS FROM INGEST FILE. CLEAN FUNCTION 
-    	// AND CONTINUE VALIDATION vs SPEC
-    	// DO COMMIT FIRST THING IN THE MORNING!!!!!
-    $scope.validateIngestFile = function(){
+	// Function that processes de XML ingest file and gets its present fields.
+    function getIngestFields () {
 		console.log("ENTRA-validateIngestFile()");
     	var ingestAssets,
     		assetAMS,
     		assetAMSfieldsArrays = [],
     		assetAppData,
     		fieldsSingleArray = [],
-    		assetAppDataFieldsArrays = [];
+    		assetAppDataFieldsArrays = [],
+    		ingestFieldsArraysObj = {}; // Result object to return.
 
 		if ( ingestService.getIngestObj() ) {    	
 			ingestAssets = ingestService.getIngestObj().Asset.Asset;
@@ -150,34 +75,16 @@ angular.module('xmlvsApiValidationApp')
 					}
 					fieldsSingleArray = [];
 				} );
-				console.log("assetAppDataFieldsArrays");
-				console.log(assetAppDataFieldsArrays);
+				// Setting return obj with fields arrays.
+				ingestFieldsArraysObj["assetAMSfieldsArrays"] = assetAMSfieldsArrays;
+				ingestFieldsArraysObj["assetAppDataFieldsArrays"] = assetAppDataFieldsArrays;
 			}
 	    }
+	    return ingestFieldsArraysObj;
     }
 
-    $scope.goToResultsSection = function() {
-		console.log("ENTRA-goToResultsSection()");
-    	$location.url('/results');
-    }
-
-	function enableApiNavSection() {
-		console.log("ENTRA-enableApiNavSection()");
-		//Enable API section
-		$("#api-section").removeClass("disabled");
-		$("#api-section").removeProp("disabled");
-	}
-/*
-	function disableApiResponseSection() {
-		// Unset apiResponse data structures
-		apiResponseService.unsetApiResponse();
-		apiResponseService.unsetApiFilesArray();
-		// Disable API section
-		$("#api-section").addClass('disabled');
-	}
-*/
 	// Changes XML to JSON
-	function xmlToJson(xml) {
+	function xmlToJson (xml) {
 		
 		console.log("ENTRA-xmlToJson()");
 		// Create the return object
@@ -214,5 +121,109 @@ angular.module('xmlvsApiValidationApp')
 			}
 		}
 		return obj;
-	};
+	}
+
+	// FUNCTIONS AND METHODS AVAILABLE TO USE THROUGH $SCOPE
+
+	$scope.goToResultsSection = function () {
+		console.log("ENTRA-goToResultsSection()");
+    	$location.url('/results');
+    };
+
+	// Watching uploads from the user
+	$scope.$watch('files', function () {
+		console.log("$scope.$watch -> $scope.files");
+		// Enable alerts with every new file upload attempt
+    	$scope.enableErrorAlerts = true;
+		// Avoiding entering in the upload function when there's already a spec uploaded.
+        if ($.isEmptyObject(ingestService.getIngestObj())) {
+        	$scope.upload($scope.files);
+        }
+    });
+    $scope.$watch('file', function () {
+        if ($scope.file != null) {
+            $scope.files = [$scope.file]; 
+        }
+    });
+
+    $scope.removeErrorAlerts = function () {
+    	$scope.enableErrorAlerts = false;
+	}
+
+    // Delete file item from the file list.
+	$scope.deleteFile = function (fileName) {
+		console.log("ENTRA-deleteFile()");
+		$scope.files = $.grep($scope.files, function (fileObject) {
+			return fileObject.name != fileName;
+		});
+		// When the user deletes all files, unset specObj in specService
+		if ($scope.files.length == 0) {
+			ingestService.unsetIngestObj();
+			$scope.ingestFileUploaded = false;
+			//Disable API section and unset apiResponse data structures.
+			// disableApiResponseSection();
+		}
+		// Re-setting specService Spec array to be the result of the deletion
+		ingestService.setIngestFilesArray($scope.files);
+	}
+
+    $scope.upload = function (files) {
+		console.log("ENTRA-upload()");
+        if (files && files.length) {
+            for (var i = 0; i < files.length; i++) {
+				var file = files[i];
+
+				//Getting the content of the object File.
+				var read = new FileReader();
+
+				read.readAsBinaryString(file);
+
+				read.onloadend = function () {
+					try {
+						// FOR XML FILE
+						var xmlDoc = $.parseXML(read.result);
+						// Assuming xmlDoc is the XML DOM Document
+						// var xmlObject = JSON.stringify(xmlToJson(xmlDoc));
+						var xmlObject = xmlToJson(xmlDoc);
+						if (xmlObject) {
+							console.log("Specification Object: ");
+							console.log(xmlObject);
+							// Changing flag to show 'continue' button
+							$scope.ingestFileUploaded = true;
+							// Making the spec available trough the specService
+							ingestService.setIngestObj(xmlObject);
+							// Updating filesSpecArray in specService
+							ingestService.addIngestFile(file);
+						}
+					}
+					catch (err) { // Error in parsing xml
+					    console.log("err.message");
+					    console.log(err.message);
+					}
+				}
+            }
+        }
+    };
+
+    $scope.validateIngestFile = function () {
+    	// Get arrays of fields from XML Ingest file.
+    	var ingestFieldsArraysObj = getIngestFields();
+    	/*console.log("ingestFieldsArraysObj");
+    	console.log(ingestFieldsArraysObj);*/
+    	console.log("assetAMSfieldsArrays");
+		console.log(ingestFieldsArraysObj.assetAMSfieldsArrays);
+		console.log("assetAppDataFieldsArrays");
+		console.log(ingestFieldsArraysObj.assetAppDataFieldsArrays);
+
+		/*
+    	 * attributesObj: Object that will store the attributes of the Spec field, in turn.
+		 * fieldAttr: Spec field to check vs api response
+		 * resultObj: Object to populate with the results of the validation check.
+		 * specObject: XML specification object.
+		 * filtered2LvlKeys: Result of searching a field in the 2nd level keys array.
+    	 */
+	    var specObject = specService.getSpec();
+	    console.log("specObject = ");
+	    console.log(specObject);
+    };
 });

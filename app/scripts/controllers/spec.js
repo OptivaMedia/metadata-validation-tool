@@ -14,7 +14,8 @@ angular.module('xmlvsApiValidationApp')
   	$timeout, 
   	$location, 
   	specService,
-  	apiResponseService) {
+  	apiResponseService,
+  	ingestService) {
     
   	// Call the env initialization routine
   	init();
@@ -69,8 +70,10 @@ angular.module('xmlvsApiValidationApp')
 		if($scope.files.length == 0){
 			specService.unsetSpec();
 			$scope.specUploaded = false;
-			//Disable API section and unset apiResponse data structures.
+			/*Disable API and Ingest sections
+			Unset apiResponse and ingest data structures.*/
 			disableApiResponseSection();
+			disableIngestNavSection();
 		}
 		// Re-setting specService Spec array to be the result of the deletion
 		specService.setSpecFilesArray($scope.files);
@@ -88,22 +91,29 @@ angular.module('xmlvsApiValidationApp')
 				read.readAsBinaryString(file);
 
 				read.onloadend = function() {
-					// Enable next section and show continue button
-					enableApiNavSection();
-					// FOR XML FILE
-					var xmlDoc = $.parseXML(read.result);
-					// Assuming xmlDoc is the XML DOM Document
-					// var xmlObject = JSON.stringify(xmlToJson(xmlDoc));
-					var xmlObject = xmlToJson(xmlDoc);
-					if(xmlObject){
-						console.log("Specification Object: ");
-						console.log(xmlObject);
-						// Changing flag to show 'continue' button
-						$scope.specUploaded = true;
-						// Making the spec available trough the specService
-						specService.setSpec(xmlObject);
-						// Updating filesSpecArray in specService
-						specService.addSpecFile(file);
+					try {
+						// Enable API & Ingest sections and show continue button
+						enableApiNavSection();
+						enableIngestNavSection();
+						// FOR XML FILE
+						var xmlDoc = $.parseXML(read.result);
+						// Assuming xmlDoc is the XML DOM Document
+						// var xmlObject = JSON.stringify(xmlToJson(xmlDoc));
+						var xmlObject = xmlToJson(xmlDoc);
+						if(xmlObject){
+							console.log("Specification Object: ");
+							console.log(xmlObject);
+							// Changing flag to show 'continue' button
+							$scope.specUploaded = true;
+							// Making the spec available trough the specService
+							specService.setSpec(xmlObject);
+							// Updating filesSpecArray in specService
+							specService.addSpecFile(file);
+						}
+					}
+					catch (err) { // Error in parsing xml
+					    console.log("err.message");
+					    console.log(err.message);
 					}
 				}
             }
@@ -122,12 +132,27 @@ angular.module('xmlvsApiValidationApp')
 		$("#api-section").removeProp("disabled");
 	}
 
+	function enableIngestNavSection() {
+		console.log("ENTRA-enableIngestNavSection()");
+		//Enable Ingest section
+		$("#ingest-section").removeClass("disabled");
+		$("#ingest-section").removeProp("disabled");
+	}
+
 	function disableApiResponseSection() {
 		// Unset apiResponse data structures
 		apiResponseService.unsetApiResponse();
 		apiResponseService.unsetApiFilesArray();
 		// Disable API section
 		$("#api-section").addClass('disabled');
+	}
+
+	function disableIngestNavSection() {
+		// Unset apiResponse data structures
+		ingestService.unsetIngestObj();
+		ingestService.unsetIngestFilesArray();
+		// Disable API section
+		$("#ingest-section").addClass('disabled');
 	}
 
 	// Changes XML to JSON

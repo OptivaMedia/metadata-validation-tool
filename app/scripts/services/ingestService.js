@@ -63,6 +63,9 @@ angular.module('xmlvsApiValidationApp')
 	ingest.addIngestFile = function(ingestFile) {
 		ingestFilesArray.push(ingestFile);
 	};
+	ingest.unsetIngestFilesArray = function() {
+		ingestFilesArray = [];
+	};
 
 	return ingest;
 });

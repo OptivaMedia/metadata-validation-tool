@@ -13,40 +13,49 @@ angular.module('xmlvsApiValidationApp')
   	specService,
   	resultsService) {
 
-  		console.log(resultsService.getResults());
-  		$scope.searchField = "";
-  		$scope.validationResults = resultsService.getResults();
-  		$scope.specType = specService.getSpecType();
-  		// Toggle active navbar component
+  	// Call the env initialization routine
+  	init();
+
+  	// INTERNAL FUNCTIONS AND METHODS.
+
+	function init () {
+		console.log(resultsService.getResults());
+			$scope.searchField = "";
+			$scope.validationResults = resultsService.getResults();
+			$scope.specType = specService.getSpecType();
+			// Toggle active navbar component
 	  	var selector = '.nav li';
 
-		if(!$(selector+":nth-child(3)").hasClass('active')) {
+		if(!$("#results-section").hasClass('active')) {
 			$(selector).removeClass('active');
-			$(selector+":nth-child(3)").addClass('active');
+			$("#results-section").addClass('active');
 		}
+	}
 
-  		$scope.fieldStatusClass = function(value){
-  			var fieldClass= "";
-  			switch(value){
-  				case "OK":
-  					fieldClass = "btn-success";
-  					break;
-  				case "NOK":
-  					fieldClass = "btn-danger";
-  					break;
-  				case "AFNS":
-  					fieldClass = "btn-warning";
-  					break;
-  				case "NIS":
-  					fieldClass = "btn-danger";
-  					break;
-  				default:
-  					fieldClass = "btn-secondary";
-  			}
-  			return fieldClass;
-  		}
+	// FUNCTIONS AND METHODS AVAILABLE TO USE THROUGH $SCOPE
 
-  		$scope.focusOnSearchField = function(){
-  			$("#searchField").focus();
-  		}
+	$scope.fieldStatusClass = function (value) {
+		var fieldClass= "";
+		switch(value){
+			case "OK":
+				fieldClass = "btn-success";
+				break;
+			case "NOK":
+				fieldClass = "btn-danger";
+				break;
+			case "AFNS":
+				fieldClass = "btn-warning";
+				break;
+			case "NIS":
+				fieldClass = "btn-danger";
+				break;
+			default:
+				fieldClass = "btn-secondary";
+		}
+		return fieldClass;
+	};
+
+	$scope.focusOnSearchField = function () {
+		$("#searchField").focus();
+	};
 });

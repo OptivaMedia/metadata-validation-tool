@@ -42,9 +42,9 @@
           <div class="collapse navbar-collapse" id="js-navbar-collapse">
             <ul class="nav navbar-nav">
               <li id="spec-section" class="active"><a href="#/">Spec</a></li>
-              <li id="ingest-section" class="active"><a href="#/ingest ">Ingest</a></li>
+              <li id="ingest-section" class="disabled"><a href="#/ingest ">Ingest</a></li>
               <li id="api-section" class="disabled"><a ng-href="#/apiresponse">API</a></li>
-              <li id="results-section" class="disabled"><a ng-href="#/results" disabled>Validation Results</a></li>
+              <li id="results-section" class="disabled"><a ng-href="#/results">Validation Results</a></li>
             </ul>
           </div>
         </div>
@@ -90,15 +90,6 @@
        ga('create', 'UA-XXXXX-X');
        ga('send', 'pageview');
 
-      // Toggle enable/disable navbar components
-      var selector = '.nav li';
-
-      $(selector).on('click', function() {
-        if(!$(this).hasClass("active")) {
-          $(selector).removeClass('active');
-          $(this).addClass('active');
-        }
-      });
       // Prevent all actions in disabled navbar components
       $('.navbar-nav').on('click', '.disabled', function(e) {
         e.preventDefault();
