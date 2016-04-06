@@ -43,11 +43,12 @@ angular.module('xmlvsApiValidationApp')
     function getIngestFields () {
 		console.log("ENTRA-validateIngestFile()");
     	var ingestAssets = [],
+    		assetClass = "", // Placeholder for the asset class in turn
     		assetAMS,
-    		assetAMSfieldsArrays = [],
+    		assetAMSfieldsObj = {},
     		assetAppData,
     		fieldsSingleArray = [],
-    		assetAppDataFieldsArrays = [],
+    		assetAppDataFieldsObj = {},
     		ingestFieldsArraysObj = {}; // Result object to return.
 
 		if ( ingestService.getIngestObj() ) {    	
@@ -65,9 +66,10 @@ angular.module('xmlvsApiValidationApp')
 				if ( assetElement ) {
 					$.each( assetElement, function ( index, asset ) {
 						assetAMS = asset.Metadata.AMS["@attributes"];
+						assetClass = assetAMS["Asset_Class"]
 						if ( assetAMS ) {
 							// Storing AMS fields of each asset sections
-							assetAMSfieldsArrays.push(Object.keys(assetAMS));
+							assetAMSfieldsObj[assetClass] = Object.keys(assetAMS);
 						}
 						// reset AMS placeholder
 						assetAMS = null;
@@ -85,14 +87,14 @@ angular.module('xmlvsApiValidationApp')
 								fieldsSingleArray.push(assetAppData["@attributes"].Name);
 							}
 							// Storing appData fieldArrays
-							assetAppDataFieldsArrays.push(fieldsSingleArray);
+							assetAppDataFieldsObj[assetClass] = fieldsSingleArray;
 						}
 						assetAppData = null;
 						fieldsSingleArray = [];
 					} );
 					// Setting return obj with fields arrays.
-					ingestFieldsArraysObj["assetAMSfieldsArrays"] = assetAMSfieldsArrays;
-					ingestFieldsArraysObj["assetAppDataFieldsArrays"] = assetAppDataFieldsArrays;
+					ingestFieldsArraysObj["assetAMSfieldsObj"] = assetAMSfieldsObj;
+					ingestFieldsArraysObj["assetAppDataFieldsObj"] = assetAppDataFieldsObj;
 				}
 			} );
 	    }
@@ -226,10 +228,10 @@ angular.module('xmlvsApiValidationApp')
     	var ingestFieldsArraysObj = getIngestFields();
     	/*console.log("ingestFieldsArraysObj");
     	console.log(ingestFieldsArraysObj);*/
-    	console.log("assetAMSfieldsArrays");
-		console.log(ingestFieldsArraysObj.assetAMSfieldsArrays);
-		console.log("assetAppDataFieldsArrays");
-		console.log(ingestFieldsArraysObj.assetAppDataFieldsArrays);
+    	console.log("assetAMSfieldsObj");
+		console.log(ingestFieldsArraysObj.assetAMSfieldsObj);
+		console.log("assetAppDataFieldsObj");
+		console.log(ingestFieldsArraysObj.assetAppDataFieldsObj);
 
 		/*
     	 * attributesObj: Object that will store the attributes of the Spec field, in turn.
@@ -242,6 +244,30 @@ angular.module('xmlvsApiValidationApp')
 	    console.log("specObject = ");
 	    console.log(specObject);
 
+		// Placeholders for the fields array of every asset class.
+	    var amsFieldsArrays = ingestFieldsArraysObj.assetAMSfieldsObj,
+	    	appDataFieldArray = ingestFieldsArraysObj.assetAppDataFieldsObj,
+	    	resultObj = {},
+	    	amsValidationResultsObj = {};
+
+	    // Validation of AMS fields in all Asset classes.
+	    if ( specObject.AMS ) {
+		    $.each( specObject.AMS, function ( field, value ) {
+		    	$.each( amsFieldsArrays, function ( assetClass, fieldsArray ) {
+		    		if(field !== "#text"){
+			    		resultObj["field"] = field;
+			    		resultObj["status"] = $.inArray(field, fieldsArray) >= 0 ? "OK" : "NOK";
+			    		if ( amsValidationResultsObj[assetClass] && amsValidationResultsObj[assetClass].constructor === Array ) {
+			    			amsValidationResultsObj[assetClass].push(resultObj);
+			    		} else {
+			    			amsValidationResultsObj[assetClass] = [resultObj];
+			    		}
+			    		resultObj = {};
+			    	}
+		    	} );
+		    } );
+		    console.log(amsValidationResultsObj);
+		}
 
     };
 });
