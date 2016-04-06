@@ -42,7 +42,7 @@ angular.module('xmlvsApiValidationApp')
 	// Function that processes de XML ingest file and gets its present fields.
     function getIngestFields () {
 		console.log("ENTRA-validateIngestFile()");
-    	var ingestAssets,
+    	var ingestAssets = [],
     		assetAMS,
     		assetAMSfieldsArrays = [],
     		assetAppData,
@@ -51,34 +51,50 @@ angular.module('xmlvsApiValidationApp')
     		ingestFieldsArraysObj = {}; // Result object to return.
 
 		if ( ingestService.getIngestObj() ) {    	
-			ingestAssets = ingestService.getIngestObj().Asset.Asset;
-			console.log("ingestAssets");
-			console.log(ingestAssets);
-			if ( ingestAssets ) {
-				$.each( ingestAssets, function ( index, asset ) {
-					assetAMS = asset.Metadata.AMS["@attributes"];
-					if ( assetAMS ) {
-						assetAMSfieldsArrays.push(Object.keys(assetAMS));
-					}
-					assetAppData = asset.Metadata["App_Data"];
-					if ( assetAppData ) {
-						if ( assetAppData.constructor === Array ) {
-							$.each( assetAppData, function ( index, appData ) {
-								if ( appData["@attributes"].Name ) {
-									fieldsSingleArray.push(appData["@attributes"].Name);
-								}
-							} );
-						} else if ( assetAppData.constructor !== Array && typeof assetAppData == 'object' ) {
-							fieldsSingleArray.push(assetAppData["@attributes"].Name);
+			
+			// First level: Put Asset Package into array structure
+			ingestAssets.push([ingestService.getIngestObj()]);
+			// Middle level: Put Asset Title into array structure
+			ingestAssets.push([ingestService.getIngestObj().Asset]);
+			/*Deepest level: Assets (movie, still-images )
+			into array structure*/
+			ingestAssets.push(ingestService.getIngestObj().Asset.Asset);
+
+			// Extract fieds of each asset section.
+			$.each ( ingestAssets,  function ( index, assetElement) {
+				if ( assetElement ) {
+					$.each( assetElement, function ( index, asset ) {
+						assetAMS = asset.Metadata.AMS["@attributes"];
+						if ( assetAMS ) {
+							// Storing AMS fields of each asset sections
+							assetAMSfieldsArrays.push(Object.keys(assetAMS));
 						}
-						assetAppDataFieldsArrays.push(fieldsSingleArray);
-					}
-					fieldsSingleArray = [];
-				} );
-				// Setting return obj with fields arrays.
-				ingestFieldsArraysObj["assetAMSfieldsArrays"] = assetAMSfieldsArrays;
-				ingestFieldsArraysObj["assetAppDataFieldsArrays"] = assetAppDataFieldsArrays;
-			}
+						// reset AMS placeholder
+						assetAMS = null;
+						assetAppData = asset.Metadata["App_Data"];
+						if ( assetAppData ) {
+							if ( assetAppData.constructor === Array ) {
+								$.each( assetAppData, function ( index, appData ) {
+									if ( appData["@attributes"].Name ) {
+										// Storing appData fields of each asset sections
+										fieldsSingleArray.push(appData["@attributes"].Name);
+									}
+								} );
+							} else if ( assetAppData.constructor !== Array && typeof assetAppData == 'object' ) {
+								// Storing appData fields of each asset sections
+								fieldsSingleArray.push(assetAppData["@attributes"].Name);
+							}
+							// Storing appData fieldArrays
+							assetAppDataFieldsArrays.push(fieldsSingleArray);
+						}
+						assetAppData = null;
+						fieldsSingleArray = [];
+					} );
+					// Setting return obj with fields arrays.
+					ingestFieldsArraysObj["assetAMSfieldsArrays"] = assetAMSfieldsArrays;
+					ingestFieldsArraysObj["assetAppDataFieldsArrays"] = assetAppDataFieldsArrays;
+				}
+			} );
 	    }
 	    return ingestFieldsArraysObj;
     }
@@ -225,5 +241,7 @@ angular.module('xmlvsApiValidationApp')
 	    var specObject = specService.getSpec();
 	    console.log("specObject = ");
 	    console.log(specObject);
+
+
     };
 });
