@@ -250,24 +250,32 @@ angular.module('xmlvsApiValidationApp')
 	    	resultObj = {},
 	    	amsValidationResultsObj = {};
 
-	    // Validation of AMS fields in all Asset classes.
-	    if ( specObject.AMS ) {
-		    $.each( specObject.AMS, function ( field, value ) {
-		    	$.each( amsFieldsArrays, function ( assetClass, fieldsArray ) {
-		    		if(field !== "#text"){
-			    		resultObj["field"] = field;
-			    		resultObj["status"] = $.inArray(field, fieldsArray) >= 0 ? "OK" : "NOK";
-			    		if ( amsValidationResultsObj[assetClass] && amsValidationResultsObj[assetClass].constructor === Array ) {
-			    			amsValidationResultsObj[assetClass].push(resultObj);
-			    		} else {
-			    			amsValidationResultsObj[assetClass] = [resultObj];
-			    		}
-			    		resultObj = {};
-			    	}
-		    	} );
-		    } );
+	    // Validation of all Asset classes' fields vs Spec.
+	    if ( specObject ) {
+	    	$.each( specObject, function ( specAssetClass, specFieldsObj ) {
+	    		// Special validation of AMS properties in all Asset classes.
+		    	if ( specAssetClass === "AMS" ) {
+		    		$.each( specFieldsObj, function ( field, fieldProperties ) {
+				    	$.each( amsFieldsArrays, function ( fileAssetClass, fieldsArray ) {
+				    		if(field !== "#text"){
+					    		resultObj["field"] = field;
+					    		resultObj["status"] = $.inArray(field, fieldsArray) >= 0 ? "OK" : "NOK";
+					    		if ( amsValidationResultsObj[fileAssetClass] && amsValidationResultsObj[fileAssetClass].constructor === Array ) {
+					    			amsValidationResultsObj[fileAssetClass].push(resultObj);
+					    		} else {
+					    			amsValidationResultsObj[fileAssetClass] = [resultObj];
+					    		}
+					    		resultObj = {};
+					    	}
+				    	} );
+				    } );
+			    }
+			    else { //For all asset classes that are not AMS.
+
+			    }
+	    	} );
+			    
 		    console.log(amsValidationResultsObj);
 		}
-
     };
 });
