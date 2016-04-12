@@ -15,7 +15,8 @@ angular.module('xmlvsApiValidationApp')
   	$location, 
   	specService,
   	apiResponseService,
-  	ingestService) {
+  	ingestService,
+  	resultsService) {
     
   	// Call the env initialization routine
   	init();
@@ -141,6 +142,17 @@ angular.module('xmlvsApiValidationApp')
 		return obj;
 	}
 
+	function goToResultsSection(){
+    	$location.url('/results');
+    }
+
+    function enableResultsNavSection(){
+    	console.log("FUNCTION: enableResultsNavSection");
+		//Enable API section
+		$("#results-section").removeClass("disabled");
+		$("#results-section").removeProp("disabled");
+	}
+
 	// FUNCTIONS AND METHODS AVAILABLE TO USE THROUGH $SCOPE
 
 	$scope.goToResultsSection = function () {
@@ -245,37 +257,130 @@ angular.module('xmlvsApiValidationApp')
 	    console.log(specObject);
 
 		// Placeholders for the fields array of every asset class.
-	    var amsFieldsArrays = ingestFieldsArraysObj.assetAMSfieldsObj,
-	    	appDataFieldArray = ingestFieldsArraysObj.assetAppDataFieldsObj,
-	    	resultObj = {},
-	    	amsValidationResultsObj = {};
+	    var amsFieldsObj = ingestFieldsArraysObj.assetAMSfieldsObj,
+	    	appDataFieldsObj = ingestFieldsArraysObj.assetAppDataFieldsObj,
+	    	resultObj = {}, //Placeholder for any result object.
+	    	fieldsValidationResultsObj = {};
 
 	    // Validation of all Asset classes' fields vs Spec.
 	    if ( specObject ) {
 	    	$.each( specObject, function ( specAssetClass, specFieldsObj ) {
-	    		// Special validation of AMS properties in all Asset classes.
-		    	if ( specAssetClass === "AMS" ) {
+	    		if ( specAssetClass !== "#text" ) {
+		    		// Going over every field defined in spec.
 		    		$.each( specFieldsObj, function ( field, fieldProperties ) {
-				    	$.each( amsFieldsArrays, function ( fileAssetClass, fieldsArray ) {
-				    		if(field !== "#text"){
-					    		resultObj["field"] = field;
-					    		resultObj["status"] = $.inArray(field, fieldsArray) >= 0 ? "OK" : "NOK";
-					    		if ( amsValidationResultsObj[fileAssetClass] && amsValidationResultsObj[fileAssetClass].constructor === Array ) {
-					    			amsValidationResultsObj[fileAssetClass].push(resultObj);
-					    		} else {
-					    			amsValidationResultsObj[fileAssetClass] = [resultObj];
-					    		}
-					    		resultObj = {};
-					    	}
-				    	} );
-				    } );
-			    }
-			    else { //For all asset classes that are not AMS.
+						if ( field !== "#text" ) {
+							// Special validation of AMS properties in all Asset classes.
+				    		if ( specAssetClass === "AMS" ) {
+						    	$.each( amsFieldsObj, function ( fileAssetClass, fieldsArray ) {
+						    		
+						    		resultObj["field"] = field;
+					    			// Checking presence of AMS field in Ingest file.
+						    		resultObj["status"] = $.inArray(field, fieldsArray) >= 0 ? "OK" : "NOK";
+						    		// Setting the resultObj type (AMS of AppData)
+						    		resultObj["type"] = "AMS";
+						    		// Creating, or updating the result array
+						    		if ( fieldsValidationResultsObj[fileAssetClass] && fieldsValidationResultsObj[fileAssetClass].constructor === Array ) {
+						    			fieldsValidationResultsObj[fileAssetClass].push(resultObj);
+						    		} else {
+						    			fieldsValidationResultsObj[fileAssetClass] = [resultObj];
+						    		}
+						    		resultObj = {};
+						    	} );
+						    }
+						    else if ( specAssetClass === "still-image" ) {
+						    	
+						    	if ( appDataFieldsObj["poster"] ) {
+							    	resultObj["field"] = field;
+						    		resultObj["status"] = $.inArray(field, appDataFieldsObj["poster"]) >= 0 ? "OK" : "NOK";
+				    				// Setting the resultObj type (AMS of AppData)
+							    	resultObj["type"] = "App_Data";
+							    	if ( fieldsValidationResultsObj["poster"].constructor === Array ) {
+				    					fieldsValidationResultsObj["poster"].push(resultObj);
+							    	} else {
+				    					fieldsValidationResultsObj["poster"] = [resultObj];
+						    		}
+							    	resultObj = {};
+			    				} else {
+			    					if ( fieldsValidationResultsObj["poster"] == null) {
+			    						fieldsValidationResultsObj["poster"] = [];
+			    					}
+			    				}
+			    				if ( appDataFieldsObj["box cover"] ) {
+							    	resultObj["field"] = field;
+						    		resultObj["status"] = $.inArray(field, appDataFieldsObj["box cover"]) >= 0 ? "OK" : "NOK";
+				    				// Setting the resultObj type (AMS of AppData)
+							    	resultObj["type"] = "App_Data";
+				    				if ( fieldsValidationResultsObj["box cover"].constructor === Array ) {
+				    					fieldsValidationResultsObj["box cover"].push(resultObj);
+							    	} else {
+				    					fieldsValidationResultsObj["box cover"] = [resultObj];
+						    		}
+							    	resultObj = {};
+			    				} else {
+			    					if ( fieldsValidationResultsObj["box cover"] == null) {
+			    						fieldsValidationResultsObj["box cover"] = [];
+			    					}
+			    				}
 
-			    }
+			    				if ( appDataFieldsObj["background image"] ) {
+							    	resultObj["field"] = field;
+						    		resultObj["status"] = $.inArray(field, appDataFieldsObj["background image"]) >= 0 ? "OK" : "NOK";
+				    				// Setting the resultObj type (AMS of AppData)
+							    	resultObj["type"] = "App_Data";
+				    				if ( fieldsValidationResultsObj["background image"].constructor === Array ) {
+				    					fieldsValidationResultsObj["background image"].push(resultObj);
+							    	} else {
+				    					fieldsValidationResultsObj["background image"] = [resultObj];
+						    		}
+							    	resultObj = {};
+			    				} else {
+			    					if ( fieldsValidationResultsObj["background image"] == null) {
+			    						fieldsValidationResultsObj["background image"] = [];
+			    					}
+			    				}
+						    }
+						    else { //For all asset classes that are not AMS, nor 'still-image'.
+				    			/*
+				    			If ingest file has the asset class that's gonna
+				    			be validated
+				    			*/
+				    			if ( appDataFieldsObj[specAssetClass] ) {
+						    		
+					    			resultObj["field"] = field;
+					    			// Checking presence of appData field in Ingest file.
+					    			resultObj["status"] = $.inArray(field, appDataFieldsObj[specAssetClass]) >= 0 ? "OK" : "NOK";
+					    			// Setting the resultObj type (AMS of AppData)
+						    		resultObj["type"] = "App_Data";
+					    			// Creating, or updating the result array
+						    		if ( fieldsValidationResultsObj[specAssetClass] && fieldsValidationResultsObj[specAssetClass].constructor === Array ) {
+						    			fieldsValidationResultsObj[specAssetClass].push(resultObj);
+						    		} else {
+						    			fieldsValidationResultsObj[specAssetClass] = [resultObj];
+						    		}
+					    			resultObj = {};
+
+				    			} else { // If is the first time checking the asset class exist in Ingest file
+				    				
+				    				if ( fieldsValidationResultsObj[specAssetClass] == null ) {
+				    					fieldsValidationResultsObj[specAssetClass] = [];
+				    				}
+				    			}
+						    }
+						}
+				    } );
+	    		}
 	    	} );
-			    
-		    console.log(amsValidationResultsObj);
+		    console.log("fieldsValidationResultsObj");
+		    console.log(fieldsValidationResultsObj);
+		   
+		    // Set the Result, in the resultService
+			resultsService.setResults(fieldsValidationResultsObj);
+			// Set the result type (INGEST or API)
+			resultsService.setResultType("INGEST");
+			// Enable Results section
+			enableResultsNavSection();
+	    	// Go to results sections
+	    	goToResultsSection();
 		}
     };
 });
