@@ -17,7 +17,7 @@
 	</span>
 </div>
 
-<table class="table table-hover">
+<table ng-if="resultType === 'API'" class="table table-hover">
 	<thead>
 	  <tr>
 	    <th>API Field</th>
@@ -35,3 +35,28 @@
 	  </tr>
 	</tbody>
 </table>
+
+<div ng-if="resultType === 'INGEST'" class="asset-class-group">
+	<div ng-repeat="(assetClass, resultsArray) in validationResults">
+		<div class="table-container" ng-if="assetClass !== 'type'">
+			<h3 class="asset-class">{{assetClass}}</h3>
+			<pre id="missing-notification" ng-if="isResultsArrayEmpty(resultsArray)"> <strong> This Asset Class is not present in the ingest file.</strong></pre>
+			<table ng-if="!isResultsArrayEmpty(resultsArray)" class="table table-hover">
+				<thead>
+				  <tr>
+				    <th>Ingest Field</th>
+				    <th>Type</th>
+				    <th>Status</th>
+				  </tr>
+				</thead>
+				<tbody>
+				  <tr ng-repeat="result in resultsArray | orderBy:'+type' | filter:searchField">
+				  	<td>{{result.field}}</td>
+				  	<td>{{result.type}}</td>
+				    <td class="col-sm-2"><button class="btn btn-sm btn-block status-indicator" ng-class="fieldStatusClass(result.status)">{{result.status}}</button></td>
+				  </tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

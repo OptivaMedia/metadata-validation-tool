@@ -24,6 +24,14 @@ angular.module('xmlvsApiValidationApp')
 	results.setResults = function(newResultsObject) {
 	  resultsObj = newResultsObject;
 	};
+	// Sets the type of the result (INGEST or API)
+	results.setResultType = function(resultType) {
+	  resultsObj.type = resultType;
+	};
+	// Gets the type of the result (INGEST or API)
+	results.getResultType = function() {
+	  return resultsObj.type;
+	};
 
 	return results;
 });

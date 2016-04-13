@@ -235,7 +235,10 @@ angular.module('xmlvsApiValidationApp')
 			resultObj.push({field: element, status: "NIS"});
 		});
 
+		// Set the Result, in the resultService
 		resultsService.setResults(resultObj);
+		// Set the result type (INGEST or API)
+		resultsService.setResultType("API");
 		// Enable Results section
 		enableResultsNavSection();
     	// Go to results sections

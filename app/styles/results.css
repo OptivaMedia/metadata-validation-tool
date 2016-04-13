@@ -1,7 +1,7 @@
-.container{
+.container {
 	text-align: initial;
 }
-.container table{
+.container table {
 	margin-top: 20px;
 }
 /*#page-description{
@@ -10,13 +10,20 @@
 	padding-bottom: 20px;
 	border-bottom: 1px solid #e5e5e5;
 }*/
-#search-group{
+#search-group {
 	margin-bottom: 20px;
 }
-h2{
+h2 {
 	text-align: center;
 }
-.status-indicator{
+.status-indicator {
 	cursor: default;
 	outline: none!important;
+}
+.asset-class-group {
+	margin-top: 120px;
+	text-align: left;
+}
+#missing-notification {
+	color: darkred;
 }

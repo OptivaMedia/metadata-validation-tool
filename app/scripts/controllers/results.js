@@ -19,11 +19,15 @@ angular.module('xmlvsApiValidationApp')
   	// INTERNAL FUNCTIONS AND METHODS.
 
 	function init () {
-		console.log(resultsService.getResults());
-			$scope.searchField = "";
-			$scope.validationResults = resultsService.getResults();
-			$scope.specType = specService.getSpecType();
-			// Toggle active navbar component
+		
+		$scope.searchField = "";
+		$scope.validationResults = resultsService.getResults();
+		console.log("validationResults");
+		console.log($scope.validationResults);
+		$scope.specType = specService.getSpecType();
+		$scope.resultType = resultsService.getResultType();
+		
+		// Toggle active navbar component
 	  	var selector = '.nav li';
 
 		if(!$("#results-section").hasClass('active')) {
@@ -58,4 +62,8 @@ angular.module('xmlvsApiValidationApp')
 	$scope.focusOnSearchField = function () {
 		$("#searchField").focus();
 	};
+
+	$scope.isResultsArrayEmpty = function ( resultsArray ) {
+		return resultsArray.length == 0;
+	}
 });
