@@ -11,6 +11,7 @@ angular.module('xmlvsApiValidationApp')
   .controller('ResultsCtrl', function (
   	$scope,
   	specService,
+  	ingestService,
   	resultsService) {
 
   	// Call the env initialization routine
@@ -26,6 +27,13 @@ angular.module('xmlvsApiValidationApp')
 		console.log($scope.validationResults);
 		$scope.specType = specService.getSpecType();
 		$scope.resultType = resultsService.getResultType();
+		$scope.vodAssetType = "";
+
+		if ( $scope.specType === "VOD" &&  $scope.resultType === "INGEST" ) {
+
+			$scope.vodAssetType = ingestService.getVodAssetType();
+
+		}
 		
 		// Toggle active navbar component
 	  	var selector = '.nav li';
@@ -41,16 +49,19 @@ angular.module('xmlvsApiValidationApp')
 	$scope.fieldStatusClass = function (value) {
 		var fieldClass= "";
 		switch(value){
-			case "OK":
+			case "OK": //Field present in Ingest or API file.
 				fieldClass = "btn-success";
 				break;
-			case "NOK":
+			case "NOK": //Field NOT present in Ingest or API file, but required.
 				fieldClass = "btn-danger";
 				break;
-			case "AFNS":
+			case "M&NR": //Missing & Not Required: Field NOT present in Ingest or API file, and NOT required.
 				fieldClass = "btn-warning";
 				break;
-			case "NIS":
+			case "AFNS": //Api Field Not in Spec: The info of the correspondant field in Kaltura's API is not in Spec.
+				fieldClass = "btn-warning";
+				break;
+			case "NIS": //Not In Spec: Field found in Kaltura's API but does not has a correspondant in Spec.
 				fieldClass = "btn-danger";
 				break;
 			default:

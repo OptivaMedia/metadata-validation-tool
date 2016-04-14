@@ -142,15 +142,62 @@ angular.module('xmlvsApiValidationApp')
 		return obj;
 	}
 
-	function goToResultsSection(){
+	function goToResultsSection () {
     	$location.url('/results');
     }
 
-    function enableResultsNavSection(){
+    function enableResultsNavSection () {
     	console.log("FUNCTION: enableResultsNavSection");
 		//Enable API section
 		$("#results-section").removeClass("disabled");
 		$("#results-section").removeProp("disabled");
+	}
+
+	function extractVodAssetType () {
+		var type = "",
+			ingestObj = ingestService.getIngestObj(), 
+			App_Data = ingestObj.Asset.Metadata["App_Data"];
+		if ( App_Data ) {
+			if ( App_Data.constructor === Array && App_Data.length > 0) {
+				$.each( App_Data, function ( index, appDataObj ) {
+					if( appDataObj["@attributes"].Name && appDataObj["@attributes"].Name === "Media_type" ) {
+						type = appDataObj["@attributes"].Value;
+					}
+				} );
+			} else if ( typeof App_Data === "object" && !$.isEmptyObject(App_Data) ) {
+				if( App_Data["@attributes"].Name && App_Data["@attributes"].Name === "Media_type" ) {
+					type = App_Data["@attributes"].Value;
+				} 
+			}
+		}
+
+		return type;
+	}
+
+	// TODO: FINISH THIS FUNCTION AND TAKE THE COMMON CODE OUT OF THE VALIDATION FUNCTION
+	function checkIngestFields ( field, vodAssetType, fieldProperties, fieldsArray ) {
+		
+		var status = "Unknown";
+
+		// Checking if field is mandatory, for regular assets or episodes.
+		if ( fieldProperties["@attributes"].required == "Y" ) {
+			
+			// Checking presence of AMS field in Ingest file.
+			status = $.inArray(field, fieldsArray) >= 0 ? "OK" : "NOK";
+
+		} else if ( fieldProperties["@attributes"].required == "N" ) {
+			
+			status = $.inArray(field, fieldsArray) >= 0 ? "OK" : "M&NR";
+
+		} else if ( fieldProperties["@attributes"].required == "E" ) {
+			
+			if ( vodAssetType === "Episode" ) { // Asset is episode.
+    			status = $.inArray(field, fieldsArray) >= 0 ? "OK" : "NOK";
+    		} else  {
+    			status = $.inArray(field, fieldsArray) >= 0 ? "OK" : "M&NR";
+    		}
+		}
+		return status;
 	}
 
 	// FUNCTIONS AND METHODS AVAILABLE TO USE THROUGH $SCOPE
@@ -224,6 +271,11 @@ angular.module('xmlvsApiValidationApp')
 							ingestService.setIngestObj(xmlObject);
 							// Updating filesSpecArray in specService
 							ingestService.addIngestFile(file);
+
+	    	  				console.log("VodAssetType");
+	    	  				console.log(extractVodAssetType());
+	    	  				ingestService.setVodAssetType(extractVodAssetType());
+
 						}
 					}
 					catch (err) { // Error in parsing xml
@@ -260,9 +312,14 @@ angular.module('xmlvsApiValidationApp')
 	    var amsFieldsObj = ingestFieldsArraysObj.assetAMSfieldsObj,
 	    	appDataFieldsObj = ingestFieldsArraysObj.assetAppDataFieldsObj,
 	    	resultObj = {}, //Placeholder for any result object.
-	    	fieldsValidationResultsObj = {};
+	    	fieldsValidationResultsObj = {},
+			vodAssetType = ingestService.getVodAssetType();
 
-	    // Validation of all Asset classes' fields vs Spec.
+
+	    console.log("vodAssetType");
+	    console.log(vodAssetType);
+
+	    // Validation of all Asset classes fields vs Spec.
 	    if ( specObject ) {
 	    	$.each( specObject, function ( specAssetClass, specFieldsObj ) {
 	    		if ( specAssetClass !== "#text" ) {
@@ -274,8 +331,10 @@ angular.module('xmlvsApiValidationApp')
 						    	$.each( amsFieldsObj, function ( fileAssetClass, fieldsArray ) {
 						    		
 						    		resultObj["field"] = field;
-					    			// Checking presence of AMS field in Ingest file.
-						    		resultObj["status"] = $.inArray(field, fieldsArray) >= 0 ? "OK" : "NOK";
+					    			
+							    	// Check fields vs Spec to determine result status
+					    			resultObj["status"] = checkIngestFields (field, vodAssetType, fieldProperties, fieldsArray);
+
 						    		// Setting the resultObj type (AMS of AppData)
 						    		resultObj["type"] = "AMS";
 						    		// Creating, or updating the result array
@@ -291,7 +350,10 @@ angular.module('xmlvsApiValidationApp')
 						    	
 						    	if ( appDataFieldsObj["poster"] ) {
 							    	resultObj["field"] = field;
-						    		resultObj["status"] = $.inArray(field, appDataFieldsObj["poster"]) >= 0 ? "OK" : "NOK";
+
+							    	// Check fields vs Spec to determine result status
+							    	resultObj["status"] = checkIngestFields (field, vodAssetType, fieldProperties, appDataFieldsObj["poster"]);
+
 				    				// Setting the resultObj type (AMS of AppData)
 							    	resultObj["type"] = "App_Data";
 							    	if ( fieldsValidationResultsObj["poster"].constructor === Array ) {
@@ -307,7 +369,10 @@ angular.module('xmlvsApiValidationApp')
 			    				}
 			    				if ( appDataFieldsObj["box cover"] ) {
 							    	resultObj["field"] = field;
-						    		resultObj["status"] = $.inArray(field, appDataFieldsObj["box cover"]) >= 0 ? "OK" : "NOK";
+							    	
+							    	// Check fields vs Spec to determine result status
+							    	resultObj["status"] = checkIngestFields (field, vodAssetType, fieldProperties, appDataFieldsObj["box cover"]);
+				    				
 				    				// Setting the resultObj type (AMS of AppData)
 							    	resultObj["type"] = "App_Data";
 				    				if ( fieldsValidationResultsObj["box cover"].constructor === Array ) {
@@ -324,7 +389,10 @@ angular.module('xmlvsApiValidationApp')
 
 			    				if ( appDataFieldsObj["background image"] ) {
 							    	resultObj["field"] = field;
-						    		resultObj["status"] = $.inArray(field, appDataFieldsObj["background image"]) >= 0 ? "OK" : "NOK";
+							    	
+							    	// Check fields vs Spec to determine result status
+							    	resultObj["status"] = checkIngestFields (field, vodAssetType, fieldProperties, appDataFieldsObj["background image"]);
+				    				
 				    				// Setting the resultObj type (AMS of AppData)
 							    	resultObj["type"] = "App_Data";
 				    				if ( fieldsValidationResultsObj["background image"].constructor === Array ) {
@@ -347,8 +415,10 @@ angular.module('xmlvsApiValidationApp')
 				    			if ( appDataFieldsObj[specAssetClass] ) {
 						    		
 					    			resultObj["field"] = field;
-					    			// Checking presence of appData field in Ingest file.
-					    			resultObj["status"] = $.inArray(field, appDataFieldsObj[specAssetClass]) >= 0 ? "OK" : "NOK";
+							    	
+							    	// Check fields vs Spec to determine result status
+							    	resultObj["status"] = checkIngestFields (field, vodAssetType, fieldProperties, appDataFieldsObj[specAssetClass]);
+					    			
 					    			// Setting the resultObj type (AMS of AppData)
 						    		resultObj["type"] = "App_Data";
 					    			// Creating, or updating the result array

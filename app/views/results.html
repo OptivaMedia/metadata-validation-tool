@@ -4,17 +4,23 @@
 	<span>Below is the detailed info of the validation results of the <strong>Kaltura API response</strong> vs <strong>XML Specification</strong> provided to the system :</span>
 </div>
 
-<div class="col-sm-3 pull-left">
-	<span><strong>Spec Type: </strong>  {{specType}}</span>
-</div>
+<div>
+	<div class="col-sm-3">
+		<span><strong>Spec Type: </strong>  {{specType}}</span>
+	</div>
 
-<div id="search-group" class="input-group col-sm-4 pull-right">
-	<input id="searchField" type="text" class="form-control" placeholder="Search for..." ng-model="searchField">
-	<span class="input-group-btn">
-		<button class="btn btn-default" type="button" ng-click="focusOnSearchField()">
-			<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-		</button>
-	</span>
+	<div class="col-sm-3">
+		<span><strong>Asset Type: </strong>  {{vodAssetType}}</span>
+	</div>
+
+	<div id="search-group" class="input-group col-sm-4 pull-right">
+		<input id="searchField" type="text" class="form-control" placeholder="Search for..." ng-model="searchField">
+		<span class="input-group-btn">
+			<button class="btn btn-default" type="button" ng-click="focusOnSearchField()">
+				<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+			</button>
+		</span>
+	</div>
 </div>
 
 <table ng-if="resultType === 'API'" class="table table-hover">

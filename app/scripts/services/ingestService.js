@@ -12,13 +12,14 @@
  
 angular.module('xmlvsApiValidationApp')
   .service('ingestService', function() {
+	
 	// Private ingest object structure
 	var ingestObj = {};
 	// Private ingest files structure
 	var ingestFilesArray = [];
-
 	// Public object to offer
 	var ingest = {};
+
 	// Provides the ingest object as a Javascript object. 
 	ingest.getIngestObj = function() {
 		var resultObj = {};
@@ -47,6 +48,18 @@ angular.module('xmlvsApiValidationApp')
 			type = "EPG";
 		}
 		return type;
+	};
+
+	ingest.getVodAssetType = function () {
+		var assetType = "Unknown";
+		if ( ingestObj.assetType ) {
+			assetType = ingestObj.assetType;
+		}
+		return assetType;
+	};
+
+	ingest.setVodAssetType = function ( assetType ) {
+		ingestObj.assetType = assetType;
 	};
 
 	// INGEST FILE OPERATIONS
