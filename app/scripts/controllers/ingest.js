@@ -40,9 +40,45 @@ angular.module('xmlvsApiValidationApp')
 		}
 	}
 
+	function getEPGIngestFields () { 
+		console.log("ENTER-getEPGIngestFields()");
+		var epgAllEventsFieldsArray = [],
+			epgEventFieldsArray = [],
+			txtIndex,
+			attributesIndex,
+			epgIngestObj = (ingestService.getIngestObj())["programme"];
+		console.log("epgIngestObj");
+		console.log(epgIngestObj);
+
+		if ( epgIngestObj ) {
+			$.each( epgIngestObj, function ( index, fieldsObj ) {
+				// Obtain all keys from fields object
+				epgEventFieldsArray = Object.keys(fieldsObj);
+				
+				// remove undesired items from EPG single event fields obj
+				txtIndex = epgEventFieldsArray.indexOf("#text");
+				attributesIndex = epgEventFieldsArray.indexOf("@attributes");
+				if ( txtIndex > -1 ) {
+					epgEventFieldsArray.splice(txtIndex, 1);
+				}
+				if ( attributesIndex > -1 ) {
+					epgEventFieldsArray.splice(attributesIndex, 1);
+				}
+				// get keys from '@attributes' object
+				if ( fieldsObj["@attributes"] ) {
+					$.merge(epgEventFieldsArray, Object.keys(fieldsObj["@attributes"]));
+				}
+				// Add single event fields obj to array of all events
+				epgAllEventsFieldsArray.push(epgEventFieldsArray);
+			} );
+			console.log("epgAllEventsFieldsArray");
+			console.log(epgAllEventsFieldsArray);
+		}
+	}
+
 	// Function that processes de XML ingest file and gets its present fields.
-    function getIngestFields () {
-		console.log("ENTRA-validateIngestFile()");
+    function getVODIngestFields () {
+		console.log("ENTRA-getVODIngestFields()");
     	var ingestAssets = [],
     		assetClass = "", // Placeholder for the asset class in turn
     		assetAMS,
@@ -272,10 +308,14 @@ angular.module('xmlvsApiValidationApp')
 							// Updating filesSpecArray in specService
 							ingestService.addIngestFile(file);
 
-	    	  				console.log("VodAssetType");
-	    	  				console.log(extractVodAssetType());
-	    	  				ingestService.setVodAssetType(extractVodAssetType());
-
+							if ( specService.getSpecType() === "EPG" ) {
+								console.log("Spec is EPG");
+							} else if ( specService.getSpecType() === "VOD" ) {
+								console.log("Spec is VOD");
+								console.log("VodAssetType");
+		    	  				console.log(extractVodAssetType());
+		    	  				ingestService.setVodAssetType(extractVodAssetType());
+							}
 						}
 					}
 					catch (err) { // Error in parsing xml
@@ -288,15 +328,7 @@ angular.module('xmlvsApiValidationApp')
     };
 
     $scope.validateIngestFile = function () {
-    	// Get arrays of fields from XML Ingest file.
-    	var ingestFieldsArraysObj = getIngestFields();
-    	/*console.log("ingestFieldsArraysObj");
-    	console.log(ingestFieldsArraysObj);*/
-    	console.log("assetAMSfieldsObj");
-		console.log(ingestFieldsArraysObj.assetAMSfieldsObj);
-		console.log("assetAppDataFieldsObj");
-		console.log(ingestFieldsArraysObj.assetAppDataFieldsObj);
-
+    	
 		/*
     	 * attributesObj: Object that will store the attributes of the Spec field, in turn.
 		 * fieldAttr: Spec field to check vs api response
@@ -304,153 +336,174 @@ angular.module('xmlvsApiValidationApp')
 		 * specObject: XML specification object.
 		 * filtered2LvlKeys: Result of searching a field in the 2nd level keys array.
     	 */
-	    var specObject = specService.getSpec();
+	    var specObject = specService.getSpec(),
+	    	specType = specService.getSpecType();
+		
 	    console.log("specObject = ");
 	    console.log(specObject);
 
-		// Placeholders for the fields array of every asset class.
-	    var amsFieldsObj = ingestFieldsArraysObj.assetAMSfieldsObj,
-	    	appDataFieldsObj = ingestFieldsArraysObj.assetAppDataFieldsObj,
-	    	resultObj = {}, //Placeholder for any result object.
-	    	fieldsValidationResultsObj = {},
-			vodAssetType = ingestService.getVodAssetType();
+	   	console.log("specType");
+	   	console.log(specType);
+
+	   	if ( specType === "VOD" ) { // VOD validation
+			console.log("VOD VALIDATION:");
+
+	    	var	ingestFieldsArraysObj = getVODIngestFields(); // Get arrays of fields from XML Ingest file.
+	    	console.log("assetAMSfieldsObj");
+			console.log(ingestFieldsArraysObj.assetAMSfieldsObj);
+			console.log("assetAppDataFieldsObj");
+			console.log(ingestFieldsArraysObj.assetAppDataFieldsObj);	   	
+
+			// Placeholders for the fields array of every asset class.
+		    var amsFieldsObj = ingestFieldsArraysObj.assetAMSfieldsObj,
+		    	appDataFieldsObj = ingestFieldsArraysObj.assetAppDataFieldsObj,
+		    	resultObj = {}, //Placeholder for any result object.
+		    	fieldsValidationResultsObj = {},
+				vodAssetType = ingestService.getVodAssetType();
 
 
-	    console.log("vodAssetType");
-	    console.log(vodAssetType);
+		    console.log("vodAssetType");
+		    console.log(vodAssetType);
 
-	    // Validation of all Asset classes fields vs Spec.
-	    if ( specObject ) {
-	    	$.each( specObject, function ( specAssetClass, specFieldsObj ) {
-	    		if ( specAssetClass !== "#text" ) {
-		    		// Going over every field defined in spec.
-		    		$.each( specFieldsObj, function ( field, fieldProperties ) {
-						if ( field !== "#text" ) {
-							// Special validation of AMS properties in all Asset classes.
-				    		if ( specAssetClass === "AMS" ) {
-						    	$.each( amsFieldsObj, function ( fileAssetClass, fieldsArray ) {
-						    		
-						    		resultObj["field"] = field;
-					    			
-							    	// Check fields vs Spec to determine result status
-					    			resultObj["status"] = checkIngestFields (field, vodAssetType, fieldProperties, fieldsArray);
+		    // Validation of all Asset classes fields vs Spec.
+		    if ( specObject ) {
+		    	$.each( specObject, function ( specAssetClass, specFieldsObj ) {
+		    		if ( specAssetClass !== "#text" ) {
+			    		// Going over every field defined in spec.
+			    		$.each( specFieldsObj, function ( field, fieldProperties ) {
+							if ( field !== "#text" ) {
+								// Special validation of AMS properties in all Asset classes.
+					    		if ( specAssetClass === "AMS" ) {
+							    	$.each( amsFieldsObj, function ( fileAssetClass, fieldsArray ) {
+							    		
+							    		resultObj["field"] = field;
+						    			
+								    	// Check fields vs Spec to determine result status
+						    			resultObj["status"] = checkIngestFields (field, vodAssetType, fieldProperties, fieldsArray);
 
-						    		// Setting the resultObj type (AMS of AppData)
-						    		resultObj["type"] = "AMS";
-						    		// Creating, or updating the result array
-						    		if ( fieldsValidationResultsObj[fileAssetClass] && fieldsValidationResultsObj[fileAssetClass].constructor === Array ) {
-						    			fieldsValidationResultsObj[fileAssetClass].push(resultObj);
-						    		} else {
-						    			fieldsValidationResultsObj[fileAssetClass] = [resultObj];
-						    		}
-						    		resultObj = {};
-						    	} );
-						    }
-						    else if ( specAssetClass === "still-image" ) {
-						    	
-						    	if ( appDataFieldsObj["poster"] ) {
-							    	resultObj["field"] = field;
-
-							    	// Check fields vs Spec to determine result status
-							    	resultObj["status"] = checkIngestFields (field, vodAssetType, fieldProperties, appDataFieldsObj["poster"]);
-
-				    				// Setting the resultObj type (AMS of AppData)
-							    	resultObj["type"] = "App_Data";
-							    	if ( fieldsValidationResultsObj["poster"].constructor === Array ) {
-				    					fieldsValidationResultsObj["poster"].push(resultObj);
-							    	} else {
-				    					fieldsValidationResultsObj["poster"] = [resultObj];
-						    		}
-							    	resultObj = {};
-			    				} else {
-			    					if ( fieldsValidationResultsObj["poster"] == null) {
-			    						fieldsValidationResultsObj["poster"] = [];
-			    					}
-			    				}
-			    				if ( appDataFieldsObj["box cover"] ) {
-							    	resultObj["field"] = field;
+							    		// Setting the resultObj type (AMS of AppData)
+							    		resultObj["type"] = "AMS";
+							    		// Creating, or updating the result array
+							    		if ( fieldsValidationResultsObj[fileAssetClass] && fieldsValidationResultsObj[fileAssetClass].constructor === Array ) {
+							    			fieldsValidationResultsObj[fileAssetClass].push(resultObj);
+							    		} else {
+							    			fieldsValidationResultsObj[fileAssetClass] = [resultObj];
+							    		}
+							    		resultObj = {};
+							    	} );
+							    }
+							    else if ( specAssetClass === "still-image" ) {
 							    	
-							    	// Check fields vs Spec to determine result status
-							    	resultObj["status"] = checkIngestFields (field, vodAssetType, fieldProperties, appDataFieldsObj["box cover"]);
-				    				
-				    				// Setting the resultObj type (AMS of AppData)
-							    	resultObj["type"] = "App_Data";
-				    				if ( fieldsValidationResultsObj["box cover"].constructor === Array ) {
-				    					fieldsValidationResultsObj["box cover"].push(resultObj);
-							    	} else {
-				    					fieldsValidationResultsObj["box cover"] = [resultObj];
-						    		}
-							    	resultObj = {};
-			    				} else {
-			    					if ( fieldsValidationResultsObj["box cover"] == null) {
-			    						fieldsValidationResultsObj["box cover"] = [];
-			    					}
-			    				}
+							    	if ( appDataFieldsObj["poster"] ) {
+								    	resultObj["field"] = field;
 
-			    				if ( appDataFieldsObj["background image"] ) {
-							    	resultObj["field"] = field;
-							    	
-							    	// Check fields vs Spec to determine result status
-							    	resultObj["status"] = checkIngestFields (field, vodAssetType, fieldProperties, appDataFieldsObj["background image"]);
-				    				
-				    				// Setting the resultObj type (AMS of AppData)
-							    	resultObj["type"] = "App_Data";
-				    				if ( fieldsValidationResultsObj["background image"].constructor === Array ) {
-				    					fieldsValidationResultsObj["background image"].push(resultObj);
-							    	} else {
-				    					fieldsValidationResultsObj["background image"] = [resultObj];
-						    		}
-							    	resultObj = {};
-			    				} else {
-			    					if ( fieldsValidationResultsObj["background image"] == null) {
-			    						fieldsValidationResultsObj["background image"] = [];
-			    					}
-			    				}
-						    }
-						    else { //For all asset classes that are not AMS, nor 'still-image'.
-				    			/*
-				    			If ingest file has the asset class that's gonna
-				    			be validated
-				    			*/
-				    			if ( appDataFieldsObj[specAssetClass] ) {
-						    		
-					    			resultObj["field"] = field;
-							    	
-							    	// Check fields vs Spec to determine result status
-							    	resultObj["status"] = checkIngestFields (field, vodAssetType, fieldProperties, appDataFieldsObj[specAssetClass]);
-					    			
-					    			// Setting the resultObj type (AMS of AppData)
-						    		resultObj["type"] = "App_Data";
-					    			// Creating, or updating the result array
-						    		if ( fieldsValidationResultsObj[specAssetClass] && fieldsValidationResultsObj[specAssetClass].constructor === Array ) {
-						    			fieldsValidationResultsObj[specAssetClass].push(resultObj);
-						    		} else {
-						    			fieldsValidationResultsObj[specAssetClass] = [resultObj];
-						    		}
-					    			resultObj = {};
+								    	// Check fields vs Spec to determine result status
+								    	resultObj["status"] = checkIngestFields (field, vodAssetType, fieldProperties, appDataFieldsObj["poster"]);
 
-				    			} else { // If is the first time checking the asset class exist in Ingest file
-				    				
-				    				if ( fieldsValidationResultsObj[specAssetClass] == null ) {
-				    					fieldsValidationResultsObj[specAssetClass] = [];
+					    				// Setting the resultObj type (AMS of AppData)
+								    	resultObj["type"] = "App_Data";
+								    	if ( fieldsValidationResultsObj["poster"].constructor === Array ) {
+					    					fieldsValidationResultsObj["poster"].push(resultObj);
+								    	} else {
+					    					fieldsValidationResultsObj["poster"] = [resultObj];
+							    		}
+								    	resultObj = {};
+				    				} else {
+				    					if ( fieldsValidationResultsObj["poster"] == null) {
+				    						fieldsValidationResultsObj["poster"] = [];
+				    					}
 				    				}
-				    			}
-						    }
-						}
-				    } );
-	    		}
-	    	} );
-		    console.log("fieldsValidationResultsObj");
-		    console.log(fieldsValidationResultsObj);
-		   
-		    // Set the Result, in the resultService
-			resultsService.setResults(fieldsValidationResultsObj);
-			// Set the result type (INGEST or API)
-			resultsService.setResultType("INGEST");
-			// Enable Results section
-			enableResultsNavSection();
-	    	// Go to results sections
-	    	goToResultsSection();
+				    				if ( appDataFieldsObj["box cover"] ) {
+								    	resultObj["field"] = field;
+								    	
+								    	// Check fields vs Spec to determine result status
+								    	resultObj["status"] = checkIngestFields (field, vodAssetType, fieldProperties, appDataFieldsObj["box cover"]);
+					    				
+					    				// Setting the resultObj type (AMS of AppData)
+								    	resultObj["type"] = "App_Data";
+					    				if ( fieldsValidationResultsObj["box cover"].constructor === Array ) {
+					    					fieldsValidationResultsObj["box cover"].push(resultObj);
+								    	} else {
+					    					fieldsValidationResultsObj["box cover"] = [resultObj];
+							    		}
+								    	resultObj = {};
+				    				} else {
+				    					if ( fieldsValidationResultsObj["box cover"] == null) {
+				    						fieldsValidationResultsObj["box cover"] = [];
+				    					}
+				    				}
+
+				    				if ( appDataFieldsObj["background image"] ) {
+								    	resultObj["field"] = field;
+								    	
+								    	// Check fields vs Spec to determine result status
+								    	resultObj["status"] = checkIngestFields (field, vodAssetType, fieldProperties, appDataFieldsObj["background image"]);
+					    				
+					    				// Setting the resultObj type (AMS of AppData)
+								    	resultObj["type"] = "App_Data";
+					    				if ( fieldsValidationResultsObj["background image"].constructor === Array ) {
+					    					fieldsValidationResultsObj["background image"].push(resultObj);
+								    	} else {
+					    					fieldsValidationResultsObj["background image"] = [resultObj];
+							    		}
+								    	resultObj = {};
+				    				} else {
+				    					if ( fieldsValidationResultsObj["background image"] == null) {
+				    						fieldsValidationResultsObj["background image"] = [];
+				    					}
+				    				}
+							    }
+							    else { //For all asset classes that are not AMS, nor 'still-image'.
+					    			/*
+					    			If ingest file has the asset class that's gonna
+					    			be validated
+					    			*/
+					    			if ( appDataFieldsObj[specAssetClass] ) {
+							    		
+						    			resultObj["field"] = field;
+								    	
+								    	// Check fields vs Spec to determine result status
+								    	resultObj["status"] = checkIngestFields (field, vodAssetType, fieldProperties, appDataFieldsObj[specAssetClass]);
+						    			
+						    			// Setting the resultObj type (AMS of AppData)
+							    		resultObj["type"] = "App_Data";
+						    			// Creating, or updating the result array
+							    		if ( fieldsValidationResultsObj[specAssetClass] && fieldsValidationResultsObj[specAssetClass].constructor === Array ) {
+							    			fieldsValidationResultsObj[specAssetClass].push(resultObj);
+							    		} else {
+							    			fieldsValidationResultsObj[specAssetClass] = [resultObj];
+							    		}
+						    			resultObj = {};
+
+					    			} else { // If is the first time checking the asset class exist in Ingest file
+					    				
+					    				if ( fieldsValidationResultsObj[specAssetClass] == null ) {
+					    					fieldsValidationResultsObj[specAssetClass] = [];
+					    				}
+					    			}
+							    }
+							}
+					    } );
+		    		}
+		    	} );
+			    console.log("fieldsValidationResultsObj");
+			    console.log(fieldsValidationResultsObj);
+			   
+			    // Set the Result, in the resultService
+				resultsService.setResults(fieldsValidationResultsObj);
+				// Set the result type (INGEST or API)
+				resultsService.setResultType("INGEST");
+				// Enable Results section
+				enableResultsNavSection();
+		    	// Go to results sections
+		    	goToResultsSection();
+			}
+		} // end of VOD validation.
+		else if ( specType === "EPG" ) { //EPG validation
+			console.log("EPG VALIDATION:");
+
+	    	var	ingestFieldsArraysObj = getEPGIngestFields(); // Get arrays of fields from XML Ingest file.
+			
 		}
     };
 });
