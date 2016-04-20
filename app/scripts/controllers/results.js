@@ -29,11 +29,15 @@ angular.module('xmlvsApiValidationApp')
 		$scope.resultType = resultsService.getResultType();
 		$scope.vodAssetType = "";
 
-		if ( $scope.specType === "VOD" &&  $scope.resultType === "INGEST" ) {
+		if ( $scope.resultType === "INGEST" ){
+			if ( $scope.specType === "VOD" ) {
 
-			$scope.vodAssetType = ingestService.getVodAssetType();
-
+				$scope.vodAssetType = ingestService.getVodAssetType();
+			} else if ($scope.specType === "EPG") {
+				console.log("INGEST & EPG");
+			}
 		}
+		
 		
 		// Toggle active navbar component
 	  	var selector = '.nav li';

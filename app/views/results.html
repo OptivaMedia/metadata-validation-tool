@@ -9,7 +9,7 @@
 		<span><strong>Spec Type: </strong>  {{specType}}</span>
 	</div>
 
-	<div class="col-sm-3">
+	<div ng-if="resultType === 'INGEST' && specType === 'VOD'" class="col-sm-3">
 		<span><strong>Asset Type: </strong>  {{vodAssetType}}</span>
 	</div>
 
@@ -42,7 +42,7 @@
 	</tbody>
 </table>
 
-<div ng-if="resultType === 'INGEST'" class="asset-class-group">
+<div ng-if="resultType === 'INGEST' && specType === 'VOD'" class="asset-class-group">
 	<div ng-repeat="(assetClass, resultsArray) in validationResults">
 		<div class="table-container" ng-if="assetClass !== 'type'">
 			<h3 class="asset-class">{{assetClass}}</h3>
@@ -59,6 +59,29 @@
 				  <tr ng-repeat="result in resultsArray | orderBy:'+type' | filter:searchField">
 				  	<td>{{result.field}}</td>
 				  	<td>{{result.type}}</td>
+				    <td class="col-sm-2"><button class="btn btn-sm btn-block status-indicator" ng-class="fieldStatusClass(result.status)">{{result.status}}</button></td>
+				  </tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div ng-if="resultType === 'INGEST' && specType === 'EPG'" class="asset-class-group">
+	<div ng-repeat="(eventTitle, resultsArray) in validationResults">
+		<div class="table-container">
+			<h3 class="event-title">{{eventTitle}}</h3>
+			<pre id="missing-notification" ng-if="isResultsArrayEmpty(resultsArray)"> <strong> This Asset Class is not present in the ingest file.</strong></pre>
+			<table ng-if="!isResultsArrayEmpty(resultsArray)" class="table table-hover">
+				<thead>
+				  <tr>
+				    <th>Ingest Field</th>
+				    <th>Status</th>
+				  </tr>
+				</thead>
+				<tbody>
+				  <tr ng-repeat="result in resultsArray | orderBy:'+field' | filter:searchField">
+				  	<td>{{result.field}}</td>
 				    <td class="col-sm-2"><button class="btn btn-sm btn-block status-indicator" ng-class="fieldStatusClass(result.status)">{{result.status}}</button></td>
 				  </tr>
 				</tbody>

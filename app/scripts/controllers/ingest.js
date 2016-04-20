@@ -43,37 +43,66 @@ angular.module('xmlvsApiValidationApp')
 	function getEPGIngestFields () { 
 		console.log("ENTER-getEPGIngestFields()");
 		var epgAllEventsFieldsArray = [],
-			epgEventFieldsArray = [],
-			txtIndex,
-			attributesIndex,
-			epgIngestObj = (ingestService.getIngestObj())["programme"];
+			epgEventFieldsObj 		= [],
+			txtIndex				= -1,
+			attributesIndex			= -1,
+			noIdCounter 			= 0, 		//Counter for no id, no title events.
+			repeatedEventTitle	 	= false, 	//Flag to determine if a event title is repeated.
+			epgIngestObj 			= (ingestService.getIngestObj())["programme"],
+			eventTitle,
+			i 						= 0,
+			eventId;
+
 		console.log("epgIngestObj");
 		console.log(epgIngestObj);
 
 		if ( epgIngestObj ) {
 			$.each( epgIngestObj, function ( index, fieldsObj ) {
 				// Obtain all keys from fields object
-				epgEventFieldsArray = Object.keys(fieldsObj);
-				
+				epgEventFieldsObj["fieldsArray"] = Object.keys(fieldsObj);
+
 				// remove undesired items from EPG single event fields obj
-				txtIndex = epgEventFieldsArray.indexOf("#text");
-				attributesIndex = epgEventFieldsArray.indexOf("@attributes");
+				txtIndex 		= epgEventFieldsObj["fieldsArray"].indexOf("#text");
+				attributesIndex = epgEventFieldsObj["fieldsArray"].indexOf("@attributes");
 				if ( txtIndex > -1 ) {
-					epgEventFieldsArray.splice(txtIndex, 1);
+					epgEventFieldsObj["fieldsArray"].splice(txtIndex, 1);
 				}
 				if ( attributesIndex > -1 ) {
-					epgEventFieldsArray.splice(attributesIndex, 1);
+					epgEventFieldsObj["fieldsArray"].splice(attributesIndex, 1);
 				}
+
 				// get keys from '@attributes' object
 				if ( fieldsObj["@attributes"] ) {
-					$.merge(epgEventFieldsArray, Object.keys(fieldsObj["@attributes"]));
+					$.merge(epgEventFieldsObj["fieldsArray"], Object.keys(fieldsObj["@attributes"]));
 				}
-				// Add single event fields obj to array of all events
-				epgAllEventsFieldsArray.push(epgEventFieldsArray);
+				// Getting title of event, to use it as obj keys.
+				if ( fieldsObj.title ) {
+					eventTitle = fieldsObj.title["#text"];	
+				} 
+				if ( fieldsObj["program_id"] ) {
+					eventId = fieldsObj["program_id"]["#text"];
+				}
+				
+				// Set event name, mixing event title and program id, depending on the fields we find
+				if ( eventTitle ) {
+					
+					epgEventFieldsObj.name = eventId ?  eventTitle + "|" + eventId : eventTitle + "|NoId#" + noIdCounter++;
+
+				} else {
+					epgEventFieldsObj.name = eventId ? eventId : "|NoId#" + noIdCounter++;
+				}
+				// Add single event fields obj to all events obj.
+				epgAllEventsFieldsArray.push(epgEventFieldsObj);
+				epgEventFieldsObj = {}; //Resetting result obj.
+				eventTitle = null;
+				eventId = null;
+				txtIndex = -1;
+				attributesIndex = -1;
 			} );
 			console.log("epgAllEventsFieldsArray");
 			console.log(epgAllEventsFieldsArray);
 		}
+		return epgAllEventsFieldsArray;
 	}
 
 	// Function that processes de XML ingest file and gets its present fields.
@@ -210,28 +239,37 @@ angular.module('xmlvsApiValidationApp')
 		return type;
 	}
 
-	// TODO: FINISH THIS FUNCTION AND TAKE THE COMMON CODE OUT OF THE VALIDATION FUNCTION
-	function checkIngestFields ( field, vodAssetType, fieldProperties, fieldsArray ) {
+	function extractEPGEventType (epgFieldsObj) {
+		var type = "",
+			ingestObj = ingestService.getIngestObj(); 
+	}
+
+	function checkIngestFields ( field, assetType, fieldProperties, fieldsArray ) {
 		
-		var status = "Unknown";
+		var status = "Unknown",
+			required;
 
-		// Checking if field is mandatory, for regular assets or episodes.
-		if ( fieldProperties["@attributes"].required == "Y" ) {
-			
-			// Checking presence of AMS field in Ingest file.
-			status = $.inArray(field, fieldsArray) >= 0 ? "OK" : "NOK";
+		if ( fieldProperties["@attributes"] ) {
 
-		} else if ( fieldProperties["@attributes"].required == "N" ) {
-			
-			status = $.inArray(field, fieldsArray) >= 0 ? "OK" : "M&NR";
+			required = fieldProperties["@attributes"].required ? fieldProperties["@attributes"].required : "";
+			// Checking if field is mandatory, for regular assets or episodes.
+			if ( required === "Y" ) {
+				
+				// Checking presence of AMS field in Ingest file.
+				status = $.inArray(field, fieldsArray) >= 0 ? "OK" : "NOK";
 
-		} else if ( fieldProperties["@attributes"].required == "E" ) {
-			
-			if ( vodAssetType === "Episode" ) { // Asset is episode.
-    			status = $.inArray(field, fieldsArray) >= 0 ? "OK" : "NOK";
-    		} else  {
-    			status = $.inArray(field, fieldsArray) >= 0 ? "OK" : "M&NR";
-    		}
+			} else if ( required === "N" ) {
+				
+				status = $.inArray(field, fieldsArray) >= 0 ? "OK" : "M&NR";
+
+			} else if ( required === "E" ) {
+				
+				if ( assetType === "Episode" ) { // Asset is episode.
+	    			status = $.inArray(field, fieldsArray) >= 0 ? "OK" : "NOK";
+	    		} else  {
+	    			status = $.inArray(field, fieldsArray) >= 0 ? "OK" : "M&NR";
+	    		}
+			}
 		}
 		return status;
 	}
@@ -310,6 +348,9 @@ angular.module('xmlvsApiValidationApp')
 
 							if ( specService.getSpecType() === "EPG" ) {
 								console.log("Spec is EPG");
+								/*console.log("VodAssetType");
+		    	  				console.log(extractEPGAssetType());
+		    	  				ingestService.setVodAssetType(extractVodAssetType());*/
 							} else if ( specService.getSpecType() === "VOD" ) {
 								console.log("Spec is VOD");
 								console.log("VodAssetType");
@@ -502,8 +543,74 @@ angular.module('xmlvsApiValidationApp')
 		else if ( specType === "EPG" ) { //EPG validation
 			console.log("EPG VALIDATION:");
 
-	    	var	ingestFieldsArraysObj = getEPGIngestFields(); // Get arrays of fields from XML Ingest file.
+	    	var	ingestFieldsObjectsArray 	= getEPGIngestFields(), // Get arrays of fields from XML Ingest file.
+	    		fieldsValidationResultsObj 	= [],
+	    		epgEventType 				= "Unknown",
+	    		resultObj 					= {},
+	    		resultObjsArray 			= [],
+	    		dummy 						= {},
+	    		i 							= 0,  // Auxiliar counter for repeated event names.
+	    		epgSpecFstLvlFieldAttr;
 			
-		}
+			// Validation of all Asset classes fields vs Spec.
+		    if ( specObject ) {
+		    	
+		    	console.log("@@@ingestFieldsObjectsArray");
+		    	console.log(ingestFieldsObjectsArray);
+
+		    	$.each( specObject, function ( epgSpecField, epgSpecFieldAttrObj ) {
+		    		
+		    		if ( epgSpecField !== "#text" ) {
+
+		    			// Validation of first level of ingest fields vs spec.
+	    				// Going over the array of fields objects of the ingest file to validate them vs a particular one spec field at the time. 
+	    				$.each( ingestFieldsObjectsArray, function ( index, epgIngestFieldsObj ) {
+	    					
+	    					// Repopulating resultObj with validation info of the event in turn.
+	    					resultObj["field"] = epgSpecField;
+	    					// Getting the event type in turn
+	    					epgEventType = epgIngestFieldsObj["series-id"] ? "Episode" : "Event" ;
+	    					// console.log("@@@epgEventType");
+	    					// console.log(epgEventType);
+	    					// Perform the check. Call to the method that validates presence of required fields. Taking into consideration episodes.
+	    					resultObj["status"] = checkIngestFields ( epgSpecField, epgEventType, epgSpecFieldAttrObj, epgIngestFieldsObj.fieldsArray );
+
+	    					// Adding result obj to results array
+	    					// resultObjsArray.push(resultObj);
+	    					
+	    					// Creating, or updating the result array
+				    		if ( dummy[epgIngestFieldsObj.name] && dummy[epgIngestFieldsObj.name].constructor === Array ) {
+				    			dummy[epgIngestFieldsObj.name].push(resultObj);
+				    		} else {
+				    			dummy[epgIngestFieldsObj.name] = [resultObj];
+				    		}
+
+	    					// dummy[epgIngestFieldsObj.name] = resultObj;
+	    					resultObj = {};
+	    				} );
+
+		    			/*if ( epgSpecFieldAttr ) {
+		    				// TODO: FINISH VALIDATION: PASS CORRECT ARGUMENTS TO THE FUNCTION. CHECK IT VALIDATES CORRECTLY
+		    				// 		 AND SET PROPER OBJECTS TO PASS THE INFO TO THE VIEW.
+		    				checkIngestFields ( epgSpecField, assetType, fieldProperties, ingestFieldsArraysObj.fieldsArray );
+
+		    				$.each( , function () {
+
+		    				} );	
+		    			}*/
+					}
+				} );
+			}
+			console.log("@@@dummy");
+			console.log(dummy);
+			// Set the Result, in the resultService
+			resultsService.setResults(dummy);
+			// Set the result type (INGEST or API)
+			resultsService.setResultType("INGEST");
+			// Enable Results section
+			enableResultsNavSection();
+	    	// Go to results sections
+	    	goToResultsSection();
+	}
     };
 });
