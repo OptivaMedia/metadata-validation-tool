@@ -69,7 +69,7 @@
 
 <div ng-if="resultType === 'INGEST' && specType === 'EPG'" class="asset-class-group">
 	<div ng-repeat="(eventTitle, resultsArray) in validationResults">
-		<div class="table-container">
+		<div class="table-container" ng-if="eventTitle !== 'type'">
 			<h3 class="event-title">{{eventTitle}}</h3>
 			<pre id="missing-notification" ng-if="isResultsArrayEmpty(resultsArray)"> <strong> This Asset Class is not present in the ingest file.</strong></pre>
 			<table ng-if="!isResultsArrayEmpty(resultsArray)" class="table table-hover">

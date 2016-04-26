@@ -548,30 +548,29 @@ angular.module('xmlvsApiValidationApp')
 	    		epgEventType 				= "Unknown",
 	    		resultObj 					= {},
 	    		resultObjsArray 			= [],
-	    		dummy 						= {},
+	    		epgValidationResultsObj 	= {},
 	    		i 							= 0,  // Auxiliar counter for repeated event names.
 	    		epgSpecFstLvlFieldAttr;
 			
 			// Validation of all Asset classes fields vs Spec.
 		    if ( specObject ) {
 		    	
-		    	console.log("@@@ingestFieldsObjectsArray");
+		    	console.log("@@@@@@ ingestFieldsObjectsArray = ");
 		    	console.log(ingestFieldsObjectsArray);
 
+		    	// Going over every field in Spec, checking it vs all events in the EPG Ingest file, to determine its status.
 		    	$.each( specObject, function ( epgSpecField, epgSpecFieldAttrObj ) {
-		    		
-		    		if ( epgSpecField !== "#text" ) {
+		    		console.log("@@@@@@ epgSpecFieldAttrObj = ");
+		    		console.log(epgSpecFieldAttrObj);
+		    		if ( epgSpecField !== "#text" && epgSpecField !== "#comment") {
 
-		    			// Validation of first level of ingest fields vs spec.
-	    				// Going over the array of fields objects of the ingest file to validate them vs a particular one spec field at the time. 
+		    			// Going over the array of fields objects of the ingest file to validate them vs a particular one spec field at the time. 
 	    				$.each( ingestFieldsObjectsArray, function ( index, epgIngestFieldsObj ) {
 	    					
 	    					// Repopulating resultObj with validation info of the event in turn.
 	    					resultObj["field"] = epgSpecField;
 	    					// Getting the event type in turn
 	    					epgEventType = epgIngestFieldsObj["series-id"] ? "Episode" : "Event" ;
-	    					// console.log("@@@epgEventType");
-	    					// console.log(epgEventType);
 	    					// Perform the check. Call to the method that validates presence of required fields. Taking into consideration episodes.
 	    					resultObj["status"] = checkIngestFields ( epgSpecField, epgEventType, epgSpecFieldAttrObj, epgIngestFieldsObj.fieldsArray );
 
@@ -579,38 +578,26 @@ angular.module('xmlvsApiValidationApp')
 	    					// resultObjsArray.push(resultObj);
 	    					
 	    					// Creating, or updating the result array
-				    		if ( dummy[epgIngestFieldsObj.name] && dummy[epgIngestFieldsObj.name].constructor === Array ) {
-				    			dummy[epgIngestFieldsObj.name].push(resultObj);
+				    		if ( epgValidationResultsObj[epgIngestFieldsObj.name] && epgValidationResultsObj[epgIngestFieldsObj.name].constructor === Array ) {
+				    			epgValidationResultsObj[epgIngestFieldsObj.name].push(resultObj);
 				    		} else {
-				    			dummy[epgIngestFieldsObj.name] = [resultObj];
+				    			epgValidationResultsObj[epgIngestFieldsObj.name] = [resultObj];
 				    		}
-
-	    					// dummy[epgIngestFieldsObj.name] = resultObj;
 	    					resultObj = {};
 	    				} );
-
-		    			/*if ( epgSpecFieldAttr ) {
-		    				// TODO: FINISH VALIDATION: PASS CORRECT ARGUMENTS TO THE FUNCTION. CHECK IT VALIDATES CORRECTLY
-		    				// 		 AND SET PROPER OBJECTS TO PASS THE INFO TO THE VIEW.
-		    				checkIngestFields ( epgSpecField, assetType, fieldProperties, ingestFieldsArraysObj.fieldsArray );
-
-		    				$.each( , function () {
-
-		    				} );	
-		    			}*/
 					}
 				} );
 			}
-			console.log("@@@dummy");
-			console.log(dummy);
 			// Set the Result, in the resultService
-			resultsService.setResults(dummy);
+			resultsService.setResults(epgValidationResultsObj);
 			// Set the result type (INGEST or API)
 			resultsService.setResultType("INGEST");
 			// Enable Results section
 			enableResultsNavSection();
 	    	// Go to results sections
 	    	goToResultsSection();
-	}
-    };
+
+		} //end of EPG validation
+
+    }; // end of validateIngestFile function
 });

@@ -261,7 +261,7 @@ angular.module('xmlvsApiValidationApp')
     		api2ndLvlApiFields = [],
     		realApiResponseApiFields;
 
-			// TODO FINISH GETTING API FIELD KEYS FROM SPECOBJECT.
+			// GETTING API FIELD KEYS FROM SPECOBJECT.
 			$.each(specObject, function(key, value) {
     			fieldSpecObj = specObject[key];
     			if( fieldSpecObj && !$.isEmptyObject(fieldSpecObj) ) {
