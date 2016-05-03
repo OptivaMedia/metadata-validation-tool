@@ -1,0 +1,175 @@
+2016/04/14 15:04:21 INFO  - jmeter.util.JMeterUtils: Setting Locale to es_ES 
+2016/04/14 15:04:21 INFO  - jmeter.util.JMeterUtils: Could not find resources for 'es_ES', using 'es' 
+2016/04/14 15:04:21 INFO  - jmeter.JMeter: Loading user properties from: /home/optiva/apache-jmeter-2.12/bin/user.properties 
+2016/04/14 15:04:21 INFO  - jmeter.JMeter: Loading system properties from: /home/optiva/apache-jmeter-2.12/bin/system.properties 
+2016/04/14 15:04:21 INFO  - jmeter.JMeter: Copyright (c) 1998-2014 The Apache Software Foundation 
+2016/04/14 15:04:21 INFO  - jmeter.JMeter: Version 2.11 r1554548 
+2016/04/14 15:04:21 INFO  - jmeter.JMeter: java.version=1.8.0_45-internal 
+2016/04/14 15:04:21 INFO  - jmeter.JMeter: java.vm.name=OpenJDK 64-Bit Server VM 
+2016/04/14 15:04:21 INFO  - jmeter.JMeter: os.name=Linux 
+2016/04/14 15:04:21 INFO  - jmeter.JMeter: os.arch=amd64 
+2016/04/14 15:04:21 INFO  - jmeter.JMeter: os.version=3.19.0-58-generic 
+2016/04/14 15:04:21 INFO  - jmeter.JMeter: file.encoding=UTF-8 
+2016/04/14 15:04:21 INFO  - jmeter.JMeter: Default Locale=español (España) 
+2016/04/14 15:04:21 INFO  - jmeter.JMeter: JMeter  Locale=español (España) 
+2016/04/14 15:04:21 INFO  - jmeter.JMeter: JMeterHome=/home/optiva/apache-jmeter-2.12 
+2016/04/14 15:04:21 INFO  - jmeter.JMeter: user.dir  =/home/optiva/xmlvsApiValidation 
+2016/04/14 15:04:21 INFO  - jmeter.JMeter: PWD       =/home/optiva/xmlvsApiValidation 
+2016/04/14 15:04:21 INFO  - jmeter.JMeter: IP: 127.0.1.1 Name: optiva-Lenovo-B50-70 FullName: optiva-Lenovo-B50-70 
+2016/04/14 15:04:21 INFO  - jmeter.JMeter: Loaded icon properties from org/apache/jmeter/images/icon.properties 
+2016/04/14 15:04:25 INFO  - jmeter.engine.util.CompoundVariable: Note: Function class names must contain the string: '.functions.' 
+2016/04/14 15:04:25 INFO  - jmeter.engine.util.CompoundVariable: Note: Function class names must not contain the string: '.gui.' 
+2016/04/14 15:04:25 INFO  - jmeter.gui.action.LookAndFeelCommand: Using look and feel: javax.swing.plaf.metal.MetalLookAndFeel [Metal, CrossPlatform] 
+2016/04/14 15:04:32 INFO  - jmeter.util.BSFTestElement: Registering JMeter version of JavaScript engine as work-round for BSF-22 
+2016/04/14 15:04:32 INFO  - jmeter.protocol.http.sampler.HTTPSamplerBase: Cannot find .className property for htmlParser, using default 
+2016/04/14 15:04:32 INFO  - jmeter.protocol.http.sampler.HTTPSamplerBase: Parser for text/html is  
+2016/04/14 15:04:32 INFO  - jmeter.protocol.http.sampler.HTTPSamplerBase: Parser for application/xhtml+xml is  
+2016/04/14 15:04:32 INFO  - jmeter.protocol.http.sampler.HTTPSamplerBase: Parser for application/xml is  
+2016/04/14 15:04:32 INFO  - jmeter.protocol.http.sampler.HTTPSamplerBase: Parser for text/xml is  
+2016/04/14 15:04:32 INFO  - jmeter.protocol.http.sampler.HTTPSamplerBase: Parser for text/vnd.wap.wml is org.apache.jmeter.protocol.http.parser.RegexpHTMLParser 
+2016/04/14 15:04:32 INFO  - jmeter.gui.util.MenuFactory: Skipping org.apache.jmeter.protocol.http.control.gui.WebServiceSamplerGui 
+2016/04/14 15:04:32 INFO  - jmeter.gui.util.MenuFactory: Skipping org.apache.jmeter.protocol.http.modifier.gui.ParamModifierGui 
+2016/04/14 15:04:33 INFO  - jorphan.exec.KeyToolUtils: keytool found at 'keytool' 
+2016/04/14 15:04:33 INFO  - jmeter.protocol.http.proxy.ProxyControl: HTTP(S) Test Script Recorder SSL Proxy will use keys that support embedded 3rd party resources in file /home/optiva/apache-jmeter-2.12/bin/proxyserver.jks 
+2016/04/14 15:04:33 INFO  - jmeter.samplers.SampleResult: Note: Sample TimeStamps are START times 
+2016/04/14 15:04:33 INFO  - jmeter.samplers.SampleResult: sampleresult.default.encoding is set to ISO-8859-1 
+2016/04/14 15:04:33 INFO  - jmeter.samplers.SampleResult: sampleresult.useNanoTime=true 
+2016/04/14 15:04:33 INFO  - jmeter.samplers.SampleResult: sampleresult.nanoThreadSleep=5000 
+2016/04/14 15:04:58 INFO  - jmeter.services.FileServer: Default base='/home/optiva/xmlvsApiValidation' 
+2016/04/14 15:04:58 INFO  - jmeter.gui.action.Load: Loading file: /home/optiva/Escritorio/Automatic_testplan_prov/ProvisionProcessKalturaSystem_PRD_xDSL.jmx 
+2016/04/14 15:04:58 INFO  - jmeter.services.FileServer: Set new base='/home/optiva/Escritorio/Automatic_testplan_prov' 
+2016/04/14 15:04:58 INFO  - jmeter.save.SaveService: Testplan (JMX) version: 2.2. Testlog (JTL) version: 2.2 
+2016/04/14 15:04:58 INFO  - jmeter.save.SaveService: Using SaveService properties file encoding UTF-8 
+2016/04/14 15:04:58 INFO  - jmeter.save.SaveService: Using SaveService properties version 2.7 
+2016/04/14 15:04:58 INFO  - jmeter.save.SaveService: Using SaveService properties file version 1618048 
+2016/04/14 15:04:58 WARN  - jmeter.save.SaveService: Bad _version - expected 2.6, found 2.7. 
+2016/04/14 15:04:58 INFO  - jmeter.save.SaveService: All converter versions present and correct 
+2016/04/14 15:05:00 INFO  - jmeter.services.FileServer: Set new base='/home/optiva/Escritorio/Automatic_testplan_prov' 
+2016/04/14 15:07:21 INFO  - jmeter.engine.StandardJMeterEngine: Listeners will be started after enabling running version 
+2016/04/14 15:07:21 INFO  - jmeter.engine.StandardJMeterEngine: To revert to the earlier behaviour, define jmeterengine.startlistenerslater=false 
+2016/04/14 15:07:21 INFO  - jmeter.engine.StandardJMeterEngine: Running the test! 
+2016/04/14 15:07:21 INFO  - jmeter.samplers.SampleEvent: List of sample_variables: [] 
+2016/04/14 15:07:21 INFO  - jmeter.samplers.SampleEvent: List of sample_variables: [] 
+2016/04/14 15:07:21 INFO  - jmeter.gui.util.JMeterMenuBar: setRunning(true,*local*) 
+2016/04/14 15:07:21 INFO  - jmeter.engine.StandardJMeterEngine: Starting ThreadGroup: 1 : Grupo de Hilos 
+2016/04/14 15:07:21 INFO  - jmeter.engine.StandardJMeterEngine: Starting 1 threads for group Grupo de Hilos. 
+2016/04/14 15:07:21 INFO  - jmeter.engine.StandardJMeterEngine: Thread will continue on error 
+2016/04/14 15:07:21 INFO  - jmeter.threads.ThreadGroup: Starting thread group number 1 threads 1 ramp-up 1 perThread 1000.0 delayedStart=false 
+2016/04/14 15:07:21 INFO  - jmeter.threads.JMeterThread: jmeterthread.startearlier=true (see jmeter.properties) 
+2016/04/14 15:07:21 INFO  - jmeter.threads.JMeterThread: Running PostProcessors in forward order 
+2016/04/14 15:07:21 INFO  - jmeter.threads.ThreadGroup: Started thread group number 1 
+2016/04/14 15:07:21 INFO  - jmeter.engine.StandardJMeterEngine: All thread groups have been started 
+2016/04/14 15:07:21 INFO  - jmeter.threads.JMeterThread: Thread started: Grupo de Hilos 1-1 
+2016/04/14 15:07:22 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredUDID616010012337 
+2016/04/14 15:07:22 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredUDIDnull 
+2016/04/14 15:07:22 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredMasterUserT_PRD_XDSL_156 
+2016/04/14 15:07:22 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredMasterUserT_PRD_XDSL_156 
+2016/04/14 15:07:22 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredMasterUsernull 
+2016/04/14 15:07:22 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredMasterUsernull 
+2016/04/14 15:07:22 INFO  - jmeter.protocol.java.sampler.BSFSampler: counterMasterUser1 
+2016/04/14 15:07:22 INFO  - jmeter.protocol.http.sampler.HTTPHCAbstractImpl: Local host = optiva-Lenovo-B50-70 
+2016/04/14 15:07:22 INFO  - jmeter.protocol.http.sampler.HTTPHC4Impl: HTTP request retry count = 0 
+2016/04/14 15:07:22 INFO  - jmeter.protocol.http.sampler.HTTPHC4Impl: Setting up HTTPS TrustAll scheme 
+2016/04/14 15:07:22 INFO  - jmeter.util.JsseSSLManager: Using default SSL protocol: TLS 
+2016/04/14 15:07:22 INFO  - jmeter.util.JsseSSLManager: SSL session context: per-thread 
+2016/04/14 15:07:22 INFO  - jmeter.threads.JMeterThread: Thread finished: Grupo de Hilos 1-1 
+2016/04/14 15:07:22 INFO  - jmeter.engine.StandardJMeterEngine: Notifying test listene2016/04/14 16:17:21 INFO  - jmeter.gui.action.Load: Loading file: /home/optiva/Escritorio/Automatic_testplan_prov/ProvisionProcessKalturaSystem_STG_xDSL.jmx 
+2016/04/14 16:17:21 INFO  - jmeter.services.FileServer: Set new base='/home/optiva/Escritorio/Automatic_testplan_prov' 
+2016/04/14 16:17:22 INFO  - jmeter.services.FileServer: Set new base='/home/optiva/Escritorio/Automatic_testplan_prov' 
+2016/04/14 16:19:40 INFO  - jmeter.engine.StandardJMeterEngine: Running the test! 
+2016/04/14 16:19:40 INFO  - jmeter.samplers.SampleEvent: List of sample_variables: [] 
+2016/04/14 16:19:40 INFO  - jmeter.gui.util.JMeterMenuBar: setRunning(true,*local*) 
+2016/04/14 16:19:40 INFO  - jmeter.engine.StandardJMeterEngine: Starting ThreadGroup: 1 : Grupo de Hilos 
+2016/04/14 16:19:40 INFO  - jmeter.engine.StandardJMeterEngine: Starting 1 threads for group Grupo de Hilos. 
+2016/04/14 16:19:40 INFO  - jmeter.engine.StandardJMeterEngine: Thread will continue on error 
+2016/04/14 16:19:40 INFO  - jmeter.threads.ThreadGroup: Starting thread group number 1 threads 1 ramp-up 1 perThread 1000.0 delayedStart=false 
+2016/04/14 16:19:40 INFO  - jmeter.threads.ThreadGroup: Started thread group number 1 
+2016/04/14 16:19:40 INFO  - jmeter.engine.StandardJMeterEngine: All thread groups have been started 
+2016/04/14 16:19:40 INFO  - jmeter.threads.JMeterThread: Thread started: Grupo de Hilos 1-1 
+2016/04/14 16:19:40 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredUDID616080104844 
+2016/04/14 16:19:40 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredUDIDnull 
+2016/04/14 16:19:40 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredMasterUserT_STG_XDSL_T_077 
+2016/04/14 16:19:40 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredMasterUserT_STG_XDSL_T_077 
+2016/04/14 16:19:40 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredMasterUsernull 
+2016/04/14 16:19:40 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredMasterUsernull 
+2016/04/14 16:19:40 INFO  - jmeter.protocol.java.sampler.BSFSampler: counterMasterUser1 
+2016/04/14 16:19:41 INFO  - jmeter.threads.JMeterThread: Thread finished: Grupo de Hilos 1-1 
+2016/04/14 16:19:41 INFO  - jmeter.engine.StandardJMeterEngine: Notifying test listeners of end of test 
+2016/04/14 16:19:41 INFO  - jmeter.gui.util.JMeterMenuBar: setRunning(false,*local*) 
+2016/04/14 16:20:46 INFO  - jmeter.engine.StandardJMeterEngine: Running the test! 
+2016/04/14 16:20:46 INFO  - jmeter.samplers.SampleEvent: List of sample_variables: [] 
+2016/04/14 16:20:46 INFO  - jmeter.gui.util.JMeterMenuBar: setRunning(true,*local*) 
+2016/04/14 16:20:46 INFO  - jmeter.engine.StandardJMeterEngine: Starting ThreadGroup: 1 : Grupo de Hilos 
+2016/04/14 16:20:46 INFO  - jmeter.engine.StandardJMeterEngine: Starting 1 threads for group Grupo de Hilos. 
+2016/04/14 16:20:46 INFO  - jmeter.engine.StandardJMeterEngine: Thread will continue on error 
+2016/04/14 16:20:46 INFO  - jmeter.threads.ThreadGroup: Starting thread group number 1 threads 1 ramp-up 1 perThread 1000.0 delayedStart=false 
+2016/04/14 16:20:46 INFO  - jmeter.threads.ThreadGroup: Started thread group number 1 
+2016/04/14 16:20:46 INFO  - jmeter.engine.StandardJMeterEngine: All thread groups have been started 
+2016/04/14 16:20:46 INFO  - jmeter.threads.JMeterThread: Thread started: Grupo de Hilos 1-1 
+2016/04/14 16:20:46 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredUDID616080104844 
+2016/04/14 16:20:46 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredUDIDnull 
+2016/04/14 16:20:47 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredMasterUserT_STG_XDSL_T_077 
+2016/04/14 16:20:47 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredMasterUserT_STG_XDSL_T_077 
+2016/04/14 16:20:47 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredMasterUsernull 
+2016/04/14 16:20:47 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredMasterUsernull 
+2016/04/14 16:20:47 INFO  - jmeter.protocol.java.sampler.BSFSampler: counterMasterUser1 
+2016/04/14 16:20:48 INFO  - jmeter.threads.JMeterThread: Thread finished: Grupo de Hilos 1-1 
+2016/04/14 16:20:48 INFO  - jmeter.engine.StandardJMeterEngine: Notifying test listeners of end of test 
+2016/04/14 16:20:48 INFO  - jmeter.gui.util.JMeterMenuBar: setRunning(false,*local*) 
+2016/04/14 16:21:09 INFO  - jmeter.engine.StandardJMeterEngine: Running the test! 
+2016/04/14 16:21:09 INFO  - jmeter.samplers.SampleEvent: List of sample_variables: [] 
+2016/04/14 16:21:09 INFO  - jmeter.gui.util.JMeterMenuBar: setRunning(true,*local*) 
+2016/04/14 16:21:10 INFO  - jmeter.engine.StandardJMeterEngine: Starting ThreadGroup: 1 : Grupo de Hilos 
+2016/04/14 16:21:10 INFO  - jmeter.engine.StandardJMeterEngine: Starting 1 threads for group Grupo de Hilos. 
+2016/04/14 16:21:10 INFO  - jmeter.engine.StandardJMeterEngine: Thread will continue on error 
+2016/04/14 16:21:10 INFO  - jmeter.threads.ThreadGroup: Starting thread group number 1 threads 1 ramp-up 1 perThread 1000.0 delayedStart=false 
+2016/04/14 16:21:10 INFO  - jmeter.threads.ThreadGroup: Started thread group number 1 
+2016/04/14 16:21:10 INFO  - jmeter.engine.StandardJMeterEngine: All thread groups have been started 
+2016/04/14 16:21:10 INFO  - jmeter.threads.JMeterThread: Thread started: Grupo de Hilos 1-1 
+2016/04/14 16:21:10 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredUDID616080104844 
+2016/04/14 16:21:10 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredUDIDnull 
+2016/04/14 16:21:10 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredMasterUserT_STG_XDSL_T_077 
+2016/04/14 16:21:10 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredMasterUserT_STG_XDSL_T_077 
+2016/04/14 16:21:10 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredMasterUsernull 
+2016/04/14 16:21:10 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredMasterUsernull 
+2016/04/14 16:21:10 INFO  - jmeter.protocol.java.sampler.BSFSampler: counterMasterUser1 
+2016/04/14 16:21:10 INFO  - jmeter.threads.JMeterThread: Thread finished: Grupo de Hilos 1-1 
+2016/04/14 16:21:10 INFO  - jmeter.engine.StandardJMeterEngine: Notifying test listeners of end of test 
+2016/04/14 16:21:10 INFO  - jmeter.gui.util.JMeterMenuBar: setRunning(false,*local*) 
+JMeterEngine: Starting ThreadGroup: 1 : Grupo de Hilos 
+2016/04/14 15:58:21 INFO  - jmeter.engine.StandardJMeterEngine: Starting 1 threads for group Grupo de Hilos. 
+2016/04/14 15:58:21 INFO  - jmeter.engine.StandardJMeterEngine: Thread will continue on error 
+2016/04/14 15:58:21 INFO  - jmeter.threads.ThreadGroup: Starting thread group number 1 threads 1 ramp-up 1 perThread 1000.0 delayedStart=false 
+2016/04/14 15:58:21 INFO  - jmeter.threads.ThreadGroup: Started thread group number 1 
+2016/04/14 15:58:21 INFO  - jmeter.engine.StandardJMeterEngine: All thread groups have been started 
+2016/04/14 15:58:21 INFO  - jmeter.threads.JMeterThread: Thread started: Grupo de Hilos 1-1 
+2016/04/14 15:58:21 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredUDID616070282655 
+2016/04/14 15:58:21 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredUDIDnull 
+2016/04/14 15:58:21 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredMasterUserT_PRD_XDSL_156 
+2016/04/14 15:58:21 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredMasterUserT_PRD_XDSL_156 
+2016/04/14 15:58:21 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredMasterUsernull 
+2016/04/14 15:58:21 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredMasterUsernull 
+2016/04/14 15:58:21 INFO  - jmeter.protocol.java.sampler.BSFSampler: counterMasterUser1 
+2016/04/14 15:58:22 INFO  - jmeter.threads.JMeterThread: Thread finished: Grupo de Hilos 1-1 
+2016/04/14 15:58:22 INFO  - jmeter.engine.StandardJMeterEngine: Notifying test listeners of end of test 
+2016/04/14 15:58:22 INFO  - jmeter.gui.util.JMeterMenuBar: setRunning(false,*local*) 
+2016/04/14 15:58:34 INFO  - jmeter.engine.StandardJMeterEngine: Running the test! 
+2016/04/14 15:58:34 INFO  - jmeter.samplers.SampleEvent: List of sample_variables: [] 
+2016/04/14 15:58:34 INFO  - jmeter.gui.util.JMeterMenuBar: setRunning(true,*local*) 
+2016/04/14 15:58:35 INFO  - jmeter.engine.StandardJMeterEngine: Starting ThreadGroup: 1 : Grupo de Hilos 
+2016/04/14 15:58:35 INFO  - jmeter.engine.StandardJMeterEngine: Starting 1 threads for group Grupo de Hilos. 
+2016/04/14 15:58:35 INFO  - jmeter.engine.StandardJMeterEngine: Thread will continue on error 
+2016/04/14 15:58:35 INFO  - jmeter.threads.ThreadGroup: Starting thread group number 1 threads 1 ramp-up 1 perThread 1000.0 delayedStart=false 
+2016/04/14 15:58:35 INFO  - jmeter.threads.ThreadGroup: Started thread group number 1 
+2016/04/14 15:58:35 INFO  - jmeter.engine.StandardJMeterEngine: All thread groups have been started 
+2016/04/14 15:58:35 INFO  - jmeter.threads.JMeterThread: Thread started: Grupo de Hilos 1-1 
+2016/04/14 15:58:35 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredUDID616070282655 
+2016/04/14 15:58:35 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredUDIDnull 
+2016/04/14 15:58:35 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredMasterUserT_PRD_XDSL_156 
+2016/04/14 15:58:35 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredMasterUserT_PRD_XDSL_156 
+2016/04/14 15:58:35 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredMasterUsernull 
+2016/04/14 15:58:35 INFO  - jmeter.protocol.java.sampler.BSFSampler: recoveredMasterUsernull 
+2016/04/14 15:58:35 INFO  - jmeter.protocol.java.sampler.BSFSampler: counterMasterUser1 
+2016/04/14 15:58:35 INFO  - jmeter.threads.JMeterThread: Thread finished: Grupo de Hilos 1-1 
+2016/04/14 15:58:35 INFO  - jmeter.engine.StandardJMeterEngine: Notifying test listeners of end of test 
+2016/04/14 15:58:35 INFO  - jmeter.gui.util.JMeterMenuBar: setRunning(false,*local*) 

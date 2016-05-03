@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testResults version="1.2">
+<httpSample t="218" lt="218" ts="1457697174561" s="true" lb="Diagnostic POST GetDeviceInfo - ${coGuidField}" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="706">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="277" lt="277" ts="1457697174788" s="true" lb="Diagnostic POST GetDomainInfo - ${coGuidField}" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1922">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<sample t="1" lt="0" ts="1457697175073" s="true" lb="Debug Sampler" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1236"/>
+
+<sample t="9" lt="0" ts="1457697236142" s="true" lb="Manage UDIDs, CoGuidIDS and Emails" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="41"/>
+<httpSample t="153" lt="153" ts="1457697236159" s="true" lb="Diagnostic POST GetDeviceInfo - ${coGuidField}" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="706">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="69" lt="69" ts="1457697236317" s="true" lb="Diagnostic POST GetDomainInfo - ${coGuidField}" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1922">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<sample t="1" lt="0" ts="1457697236394" s="true" lb="Debug Sampler" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1364"/>
+
+<sample t="7" lt="0" ts="1457697668531" s="true" lb="Manage UDIDs and CoGuidIDS" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="41"/>
+<httpSample t="112" lt="112" ts="1457697668551" s="true" lb="Diagnostic POST GetDeviceInfo - T_STG_XDSL_T_057" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="686">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="84" lt="84" ts="1457697668670" s="true" lb="Diagnostic POST GetDomainInfo - T_STG_XDSL_T_057" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="2875">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<sample t="0" lt="0" ts="1457697668764" s="true" lb="Debug Sampler" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1582"/>
+
+<sample t="11" lt="0" ts="1457697797538" s="true" lb="Manage UDIDs and CoGuidIDS" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="41"/>
+<httpSample t="137" lt="137" ts="1457697797561" s="true" lb="Diagnostic POST GetDeviceInfo - T_STG_10" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="686">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="77" lt="77" ts="1457697797704" s="true" lb="Diagnostic POST GetDomainInfo - T_STG_10" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="2875">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="103" lt="103" ts="1457697797802" s="true" lb="Diagnostic POST GetUserDataByCoGuid - T_STG_10" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1213">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<sample t="0" lt="0" ts="1457697797918" s="true" lb="Debug Sampler" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1694"/>
+
+<sample t="6" lt="0" ts="1457697915390" s="true" lb="Manage UDIDs and CoGuidIDS" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="41"/>
+<httpSample t="175" lt="175" ts="1457697915407" s="true" lb="Diagnostic POST GetDeviceInfo - T_STG_10" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="686">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="82" lt="82" ts="1457697915588" s="true" lb="Diagnostic POST GetDomainInfo - T_STG_10" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="2875">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="103" lt="103" ts="1457697915686" s="true" lb="Diagnostic POST GetUserDataByCoGuid - T_STG_10" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1213">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="91" lt="91" ts="1457697915806" s="false" lb="POST GetUserByUserName" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1213">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>true</failure>
+    <error>false</error>
+    <failureMessage>The TAX operation doesn&apos;t have been successful TAX
+ </failureMessage>
+  </assertionResult>
+</httpSample>
+<sample t="0" lt="0" ts="1457697915908" s="true" lb="Debug Sampler" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1695"/>
+
+<sample t="12" lt="0" ts="1457699395585" s="true" lb="Manage UDIDs and CoGuidIDS" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="41"/>
+<httpSample t="4401" lt="4401" ts="1457699395634" s="true" lb="Diagnostic POST GetDeviceInfo - T_STG_10" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="686">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="565" lt="565" ts="1457699400048" s="true" lb="Diagnostic POST GetDomainInfo - T_STG_10" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="2875">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="222" lt="222" ts="1457699400649" s="true" lb="Diagnostic POST GetUserDataByCoGuid - T_STG_10" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1213">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="104" lt="104" ts="1457699400899" s="true" lb="POST GetUserByUserName" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1172">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<sample t="0" lt="0" ts="1457699401030" s="true" lb="Debug Sampler" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1694"/>
+
+<sample t="8" lt="0" ts="1457699780204" s="true" lb="Manage UDIDs and CoGuidIDS" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="41"/>
+<httpSample t="174" lt="174" ts="1457699780228" s="true" lb="Diagnostic POST GetDeviceInfo - T_STG_10" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="686">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="79" lt="79" ts="1457699780417" s="true" lb="Diagnostic POST GetDomainInfo - T_STG_10" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="2875">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="102" lt="102" ts="1457699780524" s="true" lb="Diagnostic POST GetUserDataByCoGuid - T_STG_10" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1213">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="77" lt="77" ts="1457699780680" s="true" lb="POST GetUserByUserName" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1172">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="79" lt="79" ts="1457699780789" s="true" lb="Diagnostic POST GetDomainInfo - T_STG_10" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="2921">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<sample t="4" lt="0" ts="1457699780903" s="true" lb="Debug Sampler" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1694"/>
+
+<sample t="208" lt="0" ts="1458301795935" s="true" lb="Manage UDIDs, CoGuidIDS and Emails - Only XDSL" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="40"/>
+<httpSample t="160" lt="160" ts="1458301796367" s="true" lb="Activation OTG POST GetUserByUsername  - T_PRD_15" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1204">
+  <assertionResult>
+    <name>Check success</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="51" lt="51" ts="1458301796572" s="false" lb="Diagnostic Subscription POST GetUserPermitedSubscriptions- T_PRD_15" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="418">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>true</failure>
+    <error>true</error>
+    <failureMessage>org.apache.bsf.BSFException: JavaScript Error: Internal Error: org.mozilla.javascript.EcmaError: TypeError: Cannot read property &quot;m_sSubscriptionCode&quot; from undefined</failureMessage>
+  </assertionResult>
+</httpSample>
+<sample t="3" lt="0" ts="1458301796671" s="true" lb="Debug Sampler" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1589"/>
+
+<sample t="22" lt="0" ts="1458302000654" s="true" lb="Manage UDIDs, CoGuidIDS and Emails - Only XDSL" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="40"/>
+<httpSample t="96" lt="96" ts="1458302000694" s="true" lb="Activation OTG POST GetUserByUsername  - T_PRD_15" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1204">
+  <assertionResult>
+    <name>Check success</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="51" lt="51" ts="1458302000813" s="false" lb="Diagnostic Subscription POST GetUserPermitedSubscriptions- T_PRD_15" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="415">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>true</failure>
+    <error>false</error>
+    <failureMessage>There isn&apos;t any response </failureMessage>
+  </assertionResult>
+</httpSample>
+<sample t="1" lt="0" ts="1458302000882" s="true" lb="Debug Sampler" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1756"/>
+
+<sample t="32" lt="0" ts="1458302400224" s="true" lb="Manage UDIDs, CoGuidIDS and Emails - Only XDSL" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="40"/>
+<httpSample t="104" lt="104" ts="1458302400270" s="true" lb="Activation OTG POST GetUserByUsername  - T_PRD_15" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1204">
+  <assertionResult>
+    <name>Check success</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="62" lt="62" ts="1458302400408" s="true" lb="Diagnostic POST GetDomainInfo - T_PRD_15" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="3042">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="51" lt="51" ts="1458302400521" s="false" lb="Diagnostic Subscription POST GetUserPermitedSubscriptions- T_PRD_15" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="415">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>true</failure>
+    <error>false</error>
+    <failureMessage>There isn&apos;t any response </failureMessage>
+  </assertionResult>
+</httpSample>
+<sample t="1" lt="0" ts="1458302400586" s="true" lb="Debug Sampler" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1755"/>
+
+<sample t="16" lt="0" ts="1458302567244" s="true" lb="Manage UDIDs, CoGuidIDS and Emails - Only XDSL" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="40"/>
+<httpSample t="110" lt="110" ts="1458302567276" s="true" lb="Activation OTG POST GetUserByUsername  - T_PRD_15" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1204">
+  <assertionResult>
+    <name>Check success</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="66" lt="66" ts="1458302567399" s="true" lb="Diagnostic POST GetDomainInfo - T_PRD_15" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="3042">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="59" lt="59" ts="1458302567501" s="false" lb="Diagnostic POST GetUserData - T_PRD_15" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1204">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>true</failure>
+    <error>false</error>
+    <failureMessage>m_RespStatus field is documented 0
+ </failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="62" lt="62" ts="1458302567592" s="false" lb="Diagnostic Subscription POST GetUserPermitedSubscriptions- T_PRD_15" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="415">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>true</failure>
+    <error>false</error>
+    <failureMessage>There isn&apos;t any response </failureMessage>
+  </assertionResult>
+</httpSample>
+<sample t="0" lt="0" ts="1458302567665" s="true" lb="Debug Sampler" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1865"/>
+
+<sample t="15" lt="0" ts="1458302708023" s="true" lb="Manage UDIDs, CoGuidIDS and Emails - Only XDSL" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="40"/>
+<httpSample t="108" lt="108" ts="1458302708053" s="true" lb="Activation OTG POST GetUserByUsername  - T_PRD_15" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1204">
+  <assertionResult>
+    <name>Check success</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="61" lt="61" ts="1458302708177" s="true" lb="Diagnostic POST GetDomainInfo - T_PRD_15" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="3042">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>false</failure>
+    <error>false</error>
+    <failureMessage></failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="54" lt="54" ts="1458302708277" s="false" lb="Diagnostic POST GetUserData - T_PRD_15" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1204">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>true</failure>
+    <error>false</error>
+    <failureMessage>m_RespStatus field is documented 0
+ </failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="52" lt="52" ts="1458302708364" s="false" lb="Diagnostic Subscription POST GetUserPermitedSubscriptions- T_PRD_15" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="415">
+  <assertionResult>
+    <name>Check fields</name>
+    <failure>true</failure>
+    <error>false</error>
+    <failureMessage>There isn&apos;t any response </failureMessage>
+  </assertionResult>
+</httpSample>
+<sample t="0" lt="0" ts="1458302708427" s="true" lb="Debug Sampler" rc="200" rm="OK" tn="Grupo de Hilos 1-1" dt="text" by="1915"/>
+
+</testResults>
