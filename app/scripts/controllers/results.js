@@ -14,10 +14,12 @@ angular.module('xmlvsApiValidationApp')
   	ingestService,
   	resultsService) {
 
-  	// Call the env initialization routine
-  	init();
+  	$( document ).ready(function() {
+	  	// Call the env initialization routine
+  		init();
+	});
 
-  	// INTERNAL FUNCTIONS AND METHODS.
+  	// PRIVATE FUNCTIONS AND METHODS.
 
 	function init () {
 		
@@ -79,6 +81,6 @@ angular.module('xmlvsApiValidationApp')
 	};
 
 	$scope.isResultsArrayEmpty = function ( resultsArray ) {
-		return resultsArray.length == 0;
-	}
+		return resultsArray.length === 0;
+	};
 });

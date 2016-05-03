@@ -18,8 +18,10 @@ angular.module('xmlvsApiValidationApp')
   	ingestService,
   	resultsService) {
     
-  	// Call the env initialization routine
-  	init();
+  	$( document ).ready(function() {
+	  	// Call the env initialization routine
+  		init();
+	});
   	
   	// INTERNAL FUNCTIONS AND METHODS.
 
@@ -47,10 +49,8 @@ angular.module('xmlvsApiValidationApp')
 			txtIndex				= -1,
 			attributesIndex			= -1,
 			noIdCounter 			= 0, 		//Counter for no id, no title events.
-			repeatedEventTitle	 	= false, 	//Flag to determine if a event title is repeated.
-			epgIngestObj 			= (ingestService.getIngestObj())["programme"],
+			epgIngestObj 			= (ingestService.getIngestObj()).programme,
 			eventTitle,
-			i 						= 0,
 			eventId;
 
 		console.log("epgIngestObj");
@@ -59,28 +59,28 @@ angular.module('xmlvsApiValidationApp')
 		if ( epgIngestObj ) {
 			$.each( epgIngestObj, function ( index, fieldsObj ) {
 				// Obtain all keys from fields object
-				epgEventFieldsObj["fieldsArray"] = Object.keys(fieldsObj);
+				epgEventFieldsObj.fieldsArray = Object.keys(fieldsObj);
 
 				// remove undesired items from EPG single event fields obj
-				txtIndex 		= epgEventFieldsObj["fieldsArray"].indexOf("#text");
-				attributesIndex = epgEventFieldsObj["fieldsArray"].indexOf("@attributes");
+				txtIndex 		= epgEventFieldsObj.fieldsArray.indexOf("#text");
+				attributesIndex = epgEventFieldsObj.fieldsArray.indexOf("@attributes");
 				if ( txtIndex > -1 ) {
-					epgEventFieldsObj["fieldsArray"].splice(txtIndex, 1);
+					epgEventFieldsObj.fieldsArray.splice(txtIndex, 1);
 				}
 				if ( attributesIndex > -1 ) {
-					epgEventFieldsObj["fieldsArray"].splice(attributesIndex, 1);
+					epgEventFieldsObj.fieldsArray.splice(attributesIndex, 1);
 				}
 
 				// get keys from '@attributes' object
 				if ( fieldsObj["@attributes"] ) {
-					$.merge(epgEventFieldsObj["fieldsArray"], Object.keys(fieldsObj["@attributes"]));
+					$.merge(epgEventFieldsObj.fieldsArray, Object.keys(fieldsObj["@attributes"]));
 				}
 				// Getting title of event, to use it as obj keys.
 				if ( fieldsObj.title ) {
 					eventTitle = fieldsObj.title["#text"];	
 				} 
-				if ( fieldsObj["program_id"] ) {
-					eventId = fieldsObj["program_id"]["#text"];
+				if ( fieldsObj.program_id ) {
+					eventId = fieldsObj.program_id["#text"];
 				}
 				
 				// Set event name, mixing event title and program id, depending on the fields we find
@@ -132,14 +132,14 @@ angular.module('xmlvsApiValidationApp')
 				if ( assetElement ) {
 					$.each( assetElement, function ( index, asset ) {
 						assetAMS = asset.Metadata.AMS["@attributes"];
-						assetClass = assetAMS["Asset_Class"]
+						assetClass = assetAMS.Asset_Class;
 						if ( assetAMS ) {
 							// Storing AMS fields of each asset sections
 							assetAMSfieldsObj[assetClass] = Object.keys(assetAMS);
 						}
 						// reset AMS placeholder
 						assetAMS = null;
-						assetAppData = asset.Metadata["App_Data"];
+						assetAppData = asset.Metadata.App_Data;
 						if ( assetAppData ) {
 							if ( assetAppData.constructor === Array ) {
 								$.each( assetAppData, function ( index, appData ) {
@@ -148,7 +148,7 @@ angular.module('xmlvsApiValidationApp')
 										fieldsSingleArray.push(appData["@attributes"].Name);
 									}
 								} );
-							} else if ( assetAppData.constructor !== Array && typeof assetAppData == 'object' ) {
+							} else if ( assetAppData.constructor !== Array && typeof assetAppData === 'object' ) {
 								// Storing appData fields of each asset sections
 								fieldsSingleArray.push(assetAppData["@attributes"].Name);
 							}
@@ -159,8 +159,8 @@ angular.module('xmlvsApiValidationApp')
 						fieldsSingleArray = [];
 					} );
 					// Setting return obj with fields arrays.
-					ingestFieldsArraysObj["assetAMSfieldsObj"] = assetAMSfieldsObj;
-					ingestFieldsArraysObj["assetAppDataFieldsObj"] = assetAppDataFieldsObj;
+					ingestFieldsArraysObj.assetAMSfieldsObj = assetAMSfieldsObj;
+					ingestFieldsArraysObj.assetAppDataFieldsObj = assetAppDataFieldsObj;
 				}
 			} );
 	    }
@@ -174,7 +174,7 @@ angular.module('xmlvsApiValidationApp')
 		// Create the return object
 		var obj = {};
 
-		if (xml.nodeType == 1) { // element
+		if (xml.nodeType === 1) { // element
 			// do attributes
 			if (xml.attributes.length > 0) {
 			obj["@attributes"] = {};
@@ -183,7 +183,7 @@ angular.module('xmlvsApiValidationApp')
 					obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
 				}
 			}
-		} else if (xml.nodeType == 3) { // text
+		} else if (xml.nodeType === 3) { // text
 			obj = xml.nodeValue;
 		}
 
@@ -192,10 +192,10 @@ angular.module('xmlvsApiValidationApp')
 			for(var i = 0; i < xml.childNodes.length; i++) {
 				var item = xml.childNodes.item(i);
 				var nodeName = item.nodeName;
-				if (typeof(obj[nodeName]) == "undefined") {
+				if (typeof(obj[nodeName]) === "undefined") {
 					obj[nodeName] = xmlToJson(item);
 				} else {
-					if (typeof(obj[nodeName].push) == "undefined") {
+					if (typeof(obj[nodeName].push) === "undefined") {
 						var old = obj[nodeName];
 						obj[nodeName] = [];
 						obj[nodeName].push(old);
@@ -221,7 +221,7 @@ angular.module('xmlvsApiValidationApp')
 	function extractVodAssetType () {
 		var type = "",
 			ingestObj = ingestService.getIngestObj(), 
-			App_Data = ingestObj.Asset.Metadata["App_Data"];
+			App_Data = ingestObj.Asset.Metadata.App_Data;
 		if ( App_Data ) {
 			if ( App_Data.constructor === Array && App_Data.length > 0) {
 				$.each( App_Data, function ( index, appDataObj ) {
@@ -239,10 +239,12 @@ angular.module('xmlvsApiValidationApp')
 		return type;
 	}
 
+	/*
 	function extractEPGEventType (epgFieldsObj) {
 		var type = "",
 			ingestObj = ingestService.getIngestObj(); 
 	}
+	*/
 
 	function checkIngestFields ( field, assetType, fieldProperties, fieldsArray ) {
 		
@@ -282,33 +284,31 @@ angular.module('xmlvsApiValidationApp')
     };
 
 	// Watching uploads from the user
-	$scope.$watch('files', function () {
-		console.log("$scope.$watch -> $scope.files");
+    $scope.$watch('file', function () {
+    	console.log("$scope.$watch -> $scope.files");
 		// Enable alerts with every new file upload attempt
     	$scope.enableErrorAlerts = true;
-		// Avoiding entering in the upload function when there's already a spec uploaded.
-        if ($.isEmptyObject(ingestService.getIngestObj())) {
-        	$scope.upload($scope.files);
-        }
-    });
-    $scope.$watch('file', function () {
         if ($scope.file != null) {
             $scope.files = [$scope.file]; 
+        }
+        // Avoiding entering in the upload function when there's already a spec uploaded.
+        if ($.isEmptyObject(ingestService.getIngestObj())) {
+        	$scope.upload($scope.files);
         }
     });
 
     $scope.removeErrorAlerts = function () {
     	$scope.enableErrorAlerts = false;
-	}
+	};
 
     // Delete file item from the file list.
 	$scope.deleteFile = function (fileName) {
 		console.log("ENTRA-deleteFile()");
 		$scope.files = $.grep($scope.files, function (fileObject) {
-			return fileObject.name != fileName;
+			return fileObject.name !== fileName;
 		});
 		// When the user deletes all files, unset specObj in specService
-		if ($scope.files.length == 0) {
+		if ($scope.files.length === 0) {
 			ingestService.unsetIngestObj();
 			$scope.ingestFileUploaded = false;
 			//Disable API section and unset apiResponse data structures.
@@ -316,7 +316,7 @@ angular.module('xmlvsApiValidationApp')
 		}
 		// Re-setting specService Spec array to be the result of the deletion
 		ingestService.setIngestFilesArray($scope.files);
-	}
+	};
 
     $scope.upload = function (files) {
 		console.log("ENTRA-upload()");
@@ -363,7 +363,7 @@ angular.module('xmlvsApiValidationApp')
 					    console.log("err.message");
 					    console.log(err.message);
 					}
-				}
+				};
             }
         }
     };
@@ -378,7 +378,8 @@ angular.module('xmlvsApiValidationApp')
 		 * filtered2LvlKeys: Result of searching a field in the 2nd level keys array.
     	 */
 	    var specObject = specService.getSpec(),
-	    	specType = specService.getSpecType();
+	    	specType = specService.getSpecType(),
+	    	resultObj = {}; //Placeholder for any result object.
 		
 	    console.log("specObject = ");
 	    console.log(specObject);
@@ -398,7 +399,6 @@ angular.module('xmlvsApiValidationApp')
 			// Placeholders for the fields array of every asset class.
 		    var amsFieldsObj = ingestFieldsArraysObj.assetAMSfieldsObj,
 		    	appDataFieldsObj = ingestFieldsArraysObj.assetAppDataFieldsObj,
-		    	resultObj = {}, //Placeholder for any result object.
 		    	fieldsValidationResultsObj = {},
 				vodAssetType = ingestService.getVodAssetType();
 
@@ -417,13 +417,13 @@ angular.module('xmlvsApiValidationApp')
 					    		if ( specAssetClass === "AMS" ) {
 							    	$.each( amsFieldsObj, function ( fileAssetClass, fieldsArray ) {
 							    		
-							    		resultObj["field"] = field;
+							    		resultObj.field = field;
 						    			
 								    	// Check fields vs Spec to determine result status
-						    			resultObj["status"] = checkIngestFields (field, vodAssetType, fieldProperties, fieldsArray);
+						    			resultObj.status = checkIngestFields (field, vodAssetType, fieldProperties, fieldsArray);
 
 							    		// Setting the resultObj type (AMS of AppData)
-							    		resultObj["type"] = "AMS";
+							    		resultObj.type = "AMS";
 							    		// Creating, or updating the result array
 							    		if ( fieldsValidationResultsObj[fileAssetClass] && fieldsValidationResultsObj[fileAssetClass].constructor === Array ) {
 							    			fieldsValidationResultsObj[fileAssetClass].push(resultObj);
@@ -435,33 +435,33 @@ angular.module('xmlvsApiValidationApp')
 							    }
 							    else if ( specAssetClass === "still-image" ) {
 							    	
-							    	if ( appDataFieldsObj["poster"] ) {
-								    	resultObj["field"] = field;
+							    	if ( appDataFieldsObj.poster ) {
+								    	resultObj.field = field;
 
 								    	// Check fields vs Spec to determine result status
-								    	resultObj["status"] = checkIngestFields (field, vodAssetType, fieldProperties, appDataFieldsObj["poster"]);
+								    	resultObj.status = checkIngestFields (field, vodAssetType, fieldProperties, appDataFieldsObj.poster);
 
 					    				// Setting the resultObj type (AMS of AppData)
-								    	resultObj["type"] = "App_Data";
-								    	if ( fieldsValidationResultsObj["poster"].constructor === Array ) {
-					    					fieldsValidationResultsObj["poster"].push(resultObj);
+								    	resultObj.type = "App_Data";
+								    	if ( fieldsValidationResultsObj.poster.constructor === Array ) {
+					    					fieldsValidationResultsObj.poster.push(resultObj);
 								    	} else {
-					    					fieldsValidationResultsObj["poster"] = [resultObj];
+					    					fieldsValidationResultsObj.poster = [resultObj];
 							    		}
 								    	resultObj = {};
 				    				} else {
-				    					if ( fieldsValidationResultsObj["poster"] == null) {
-				    						fieldsValidationResultsObj["poster"] = [];
+				    					if ( !fieldsValidationResultsObj.hasOwnProperty('poster') ) {
+				    						fieldsValidationResultsObj.poster = [];
 				    					}
 				    				}
 				    				if ( appDataFieldsObj["box cover"] ) {
-								    	resultObj["field"] = field;
+								    	resultObj.field = field;
 								    	
 								    	// Check fields vs Spec to determine result status
-								    	resultObj["status"] = checkIngestFields (field, vodAssetType, fieldProperties, appDataFieldsObj["box cover"]);
+								    	resultObj.status = checkIngestFields (field, vodAssetType, fieldProperties, appDataFieldsObj["box cover"]);
 					    				
 					    				// Setting the resultObj type (AMS of AppData)
-								    	resultObj["type"] = "App_Data";
+								    	resultObj.type = "App_Data";
 					    				if ( fieldsValidationResultsObj["box cover"].constructor === Array ) {
 					    					fieldsValidationResultsObj["box cover"].push(resultObj);
 								    	} else {
@@ -469,19 +469,19 @@ angular.module('xmlvsApiValidationApp')
 							    		}
 								    	resultObj = {};
 				    				} else {
-				    					if ( fieldsValidationResultsObj["box cover"] == null) {
+				    					if ( !fieldsValidationResultsObj.hasOwnProperty('box cover') ) {
 				    						fieldsValidationResultsObj["box cover"] = [];
 				    					}
 				    				}
 
 				    				if ( appDataFieldsObj["background image"] ) {
-								    	resultObj["field"] = field;
+								    	resultObj.field = field;
 								    	
 								    	// Check fields vs Spec to determine result status
-								    	resultObj["status"] = checkIngestFields (field, vodAssetType, fieldProperties, appDataFieldsObj["background image"]);
+								    	resultObj.status = checkIngestFields (field, vodAssetType, fieldProperties, appDataFieldsObj["background image"]);
 					    				
 					    				// Setting the resultObj type (AMS of AppData)
-								    	resultObj["type"] = "App_Data";
+								    	resultObj.type = "App_Data";
 					    				if ( fieldsValidationResultsObj["background image"].constructor === Array ) {
 					    					fieldsValidationResultsObj["background image"].push(resultObj);
 								    	} else {
@@ -489,7 +489,7 @@ angular.module('xmlvsApiValidationApp')
 							    		}
 								    	resultObj = {};
 				    				} else {
-				    					if ( fieldsValidationResultsObj["background image"] == null) {
+				    					if ( !fieldsValidationResultsObj.hasOwnProperty('background image') ) {
 				    						fieldsValidationResultsObj["background image"] = [];
 				    					}
 				    				}
@@ -501,13 +501,13 @@ angular.module('xmlvsApiValidationApp')
 					    			*/
 					    			if ( appDataFieldsObj[specAssetClass] ) {
 							    		
-						    			resultObj["field"] = field;
+						    			resultObj.field = field;
 								    	
 								    	// Check fields vs Spec to determine result status
-								    	resultObj["status"] = checkIngestFields (field, vodAssetType, fieldProperties, appDataFieldsObj[specAssetClass]);
+								    	resultObj.status = checkIngestFields (field, vodAssetType, fieldProperties, appDataFieldsObj[specAssetClass]);
 						    			
 						    			// Setting the resultObj type (AMS of AppData)
-							    		resultObj["type"] = "App_Data";
+							    		resultObj.type = "App_Data";
 						    			// Creating, or updating the result array
 							    		if ( fieldsValidationResultsObj[specAssetClass] && fieldsValidationResultsObj[specAssetClass].constructor === Array ) {
 							    			fieldsValidationResultsObj[specAssetClass].push(resultObj);
@@ -518,7 +518,7 @@ angular.module('xmlvsApiValidationApp')
 
 					    			} else { // If is the first time checking the asset class exist in Ingest file
 					    				
-					    				if ( fieldsValidationResultsObj[specAssetClass] == null ) {
+					    				if ( !fieldsValidationResultsObj.hasOwnProperty(specAssetClass) ) {
 					    					fieldsValidationResultsObj[specAssetClass] = [];
 					    				}
 					    			}
@@ -544,39 +544,26 @@ angular.module('xmlvsApiValidationApp')
 			console.log("EPG VALIDATION:");
 
 	    	var	ingestFieldsObjectsArray 	= getEPGIngestFields(), // Get arrays of fields from XML Ingest file.
-	    		fieldsValidationResultsObj 	= [],
 	    		epgEventType 				= "Unknown",
-	    		resultObj 					= {},
-	    		resultObjsArray 			= [],
-	    		epgValidationResultsObj 	= {},
-	    		i 							= 0,  // Auxiliar counter for repeated event names.
-	    		epgSpecFstLvlFieldAttr;
+	    		epgValidationResultsObj 	= {};
 			
 			// Validation of all Asset classes fields vs Spec.
 		    if ( specObject ) {
-		    	
-		    	console.log("@@@@@@ ingestFieldsObjectsArray = ");
-		    	console.log(ingestFieldsObjectsArray);
 
 		    	// Going over every field in Spec, checking it vs all events in the EPG Ingest file, to determine its status.
 		    	$.each( specObject, function ( epgSpecField, epgSpecFieldAttrObj ) {
-		    		console.log("@@@@@@ epgSpecFieldAttrObj = ");
-		    		console.log(epgSpecFieldAttrObj);
+
 		    		if ( epgSpecField !== "#text" && epgSpecField !== "#comment") {
 
 		    			// Going over the array of fields objects of the ingest file to validate them vs a particular one spec field at the time. 
 	    				$.each( ingestFieldsObjectsArray, function ( index, epgIngestFieldsObj ) {
 	    					
 	    					// Repopulating resultObj with validation info of the event in turn.
-	    					resultObj["field"] = epgSpecField;
+	    					resultObj.field = epgSpecField;
 	    					// Getting the event type in turn
 	    					epgEventType = epgIngestFieldsObj["series-id"] ? "Episode" : "Event" ;
 	    					// Perform the check. Call to the method that validates presence of required fields. Taking into consideration episodes.
-	    					resultObj["status"] = checkIngestFields ( epgSpecField, epgEventType, epgSpecFieldAttrObj, epgIngestFieldsObj.fieldsArray );
-
-	    					// Adding result obj to results array
-	    					// resultObjsArray.push(resultObj);
-	    					
+	    					resultObj.status = checkIngestFields ( epgSpecField, epgEventType, epgSpecFieldAttrObj, epgIngestFieldsObj.fieldsArray );
 	    					// Creating, or updating the result array
 				    		if ( epgValidationResultsObj[epgIngestFieldsObj.name] && epgValidationResultsObj[epgIngestFieldsObj.name].constructor === Array ) {
 				    			epgValidationResultsObj[epgIngestFieldsObj.name].push(resultObj);

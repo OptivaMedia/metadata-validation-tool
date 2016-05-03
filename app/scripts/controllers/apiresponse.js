@@ -18,8 +18,10 @@ angular.module('xmlvsApiValidationApp')
   	specService, 
   	apiResponseService) {
   	
-  	// Call the env initialization routine
-  	init();
+  	$( document ).ready(function() {
+	  	// Call the env initialization routine
+  		init();
+	});
 
 	function init() {
     	console.log("FUNCTION: init()");
@@ -53,8 +55,7 @@ angular.module('xmlvsApiValidationApp')
     	// Enable alerts with every new file upload attempt
     	$scope.enableApiFileErrorAlerts = true;
 
-		if ( $scope.fileApi != null && $.isEmptyObject(apiResponseService.getApiResponse())
-				 && (apiResponseService.getApiFilesArray).length == 0 ) {
+		if ( $scope.fileApi != null && $.isEmptyObject(apiResponseService.getApiResponse()) && (apiResponseService.getApiFilesArray).length === 0 ) {
 			// Locally storing the file in the scope's files array
 			$scope.apiFiles = $scope.fileApi;
             $scope.uploadAPI($scope.fileApi);
@@ -64,7 +65,7 @@ angular.module('xmlvsApiValidationApp')
     $scope.removeApiErrorAlerts = function() {
     	console.log("FUNCTION: removeApiErrorAlerts");
     	$scope.enableApiFileErrorAlerts = false;
-	}
+	};
 
     /**
 	 * @ngdoc function
@@ -105,7 +106,7 @@ angular.module('xmlvsApiValidationApp')
 					    console.log("err.message");
 					    console.log(err.message);
 					}    
-				}
+				};
             }
         }
     };
@@ -114,17 +115,17 @@ angular.module('xmlvsApiValidationApp')
 	$scope.deleteFile = function(fileName) {
     	console.log("FUNCTION: deleteFile");
 		$scope.apiFiles = $.grep($scope.apiFiles, function(fileObject) {
-			return fileObject.name != fileName;
+			return fileObject.name !== fileName;
 		});
 		// When the user deletes all files, unset apiResponseObj in apiResponseService
-		if($scope.apiFiles == 0) {
+		if( $scope.apiFiles.length === 0 ) {
 			// Clear apiResponse Obj
 			apiResponseService.unsetApiResponse();
 			$scope.apiResponseLoaded = false;
 		}
 		// Re-setting apiResponseService files array to be the result of the deletion
 		apiResponseService.setApiFilesArray($scope.apiFiles);
-	}
+	};
 
     /**
 	 * @ngdoc function
@@ -163,10 +164,10 @@ angular.module('xmlvsApiValidationApp')
 	     * to check the response is well suited.
 	    */
 		$.each(specObject, function(key, element) {
-			if( key != "#text" && typeof element === "object" && !($.isEmptyObject(element)) ){
+			if( key !== "#text" && typeof element === "object" && !($.isEmptyObject(element)) ){
 				attributesObj = element["@attributes"];
 				fieldAttr = attributesObj.fieldApi;
-				if(attributesObj.required == "Y" || attributesObj.required == "N"){
+				if(attributesObj.required === "Y" || attributesObj.required === "N"){
 					console.log("First level Processing...");
 					//Check the API field is defined in Spec
 					if(fieldAttr){ // When the pair SpecField -> APIfield is appropriately specified in the spec file.
@@ -176,12 +177,12 @@ angular.module('xmlvsApiValidationApp')
 							case "Meta":
 							case "Extra":
 								filtered2LvlKeys = $.grep($scope.apiSndLevelKeys, function(fieldObj){ 
-									return fieldObj.field == fieldAttr;
+									return fieldObj.field === fieldAttr;
 								});
-								filtered2LvlKeys.length >= 1 ? resultByField.status = "OK" : resultByField.status = "NOK" ;
+								resultByField.status = filtered2LvlKeys.length >= 1 ? "OK" : "NOK" ;
 								break;
 							default:
-								$.inArray(fieldAttr,$scope.apiFstLevelKeys) >= 0 ? resultByField.status = "OK" : resultByField.status = "NOK" ;
+								resultByField.status = $.inArray(fieldAttr,$scope.apiFstLevelKeys) >= 0 ? "OK" : "NOK" ;
 						}
 					}else{ // When the API field correspondant to a Spec field is not specified in the spec file.
 						resultByField.field = key;
@@ -206,9 +207,9 @@ angular.module('xmlvsApiValidationApp')
 						if (fieldAttr){
 							resultByField.field = fieldAttr;
 							filtered2LvlKeys = $.grep($scope.apiSndLevelKeys, function(fieldObj){ 
-								return fieldObj.field == fieldAttr;
+								return fieldObj.field === fieldAttr;
 							});
-							filtered2LvlKeys.length >= 1 ? resultByField.status = "OK" : resultByField.status = "NOK" ;
+							resultByField.status = filtered2LvlKeys.length >= 1 ? "OK" : "NOK" ;
 						}else{ // When the API field correspondant to a Spec field is not specified in the spec file.
 							resultByField.field = key; //AFNS= API Field Not Specified.
 							resultByField.status = "AFNS"; //AFNS= API Field Not Specified.
@@ -253,7 +254,6 @@ angular.module('xmlvsApiValidationApp')
     function checkForMissingFieldsInSpec() {
     	console.log("FUNCTION: checkForMissingFieldsInSpec");
     	var specObject = specService.getSpec(),
-    		specKeys,
     		missingFieldsResult = [],
     		filteredSpecApiFields = [],
     		fieldSpecObj,
@@ -262,11 +262,11 @@ angular.module('xmlvsApiValidationApp')
     		realApiResponseApiFields;
 
 			// GETTING API FIELD KEYS FROM SPECOBJECT.
-			$.each(specObject, function(key, value) {
+			$.each(specObject, function(key) {
     			fieldSpecObj = specObject[key];
     			if( fieldSpecObj && !$.isEmptyObject(fieldSpecObj) ) {
-	    			// Check it is a real specObj, with a fieldApi defined 
-	    			if( key != "#text" && fieldSpecObj["@attributes"].fieldApi ) {
+	    			// Check it is a real specObj, with a fieldApi defined
+	    			if( key !== "#text" && fieldSpecObj["@attributes"].fieldApi ) {
 	    				filteredSpecApiFields.push(fieldSpecObj["@attributes"].fieldApi);
 	    				altFieldSpecObj = fieldSpecObj.altField;
 	    				// Check the specObj has an alternative field.
@@ -317,13 +317,13 @@ angular.module('xmlvsApiValidationApp')
 	    	typeSpec = specService.getSpecType();
 
 	    if(typeSpec) {
-	    	metasFieldValue = typeSpec == "VOD" ? "Metas" : "metas" ;
-	    	tagsFieldValue = typeSpec == "VOD" ? "Tags" : "tags" ;
+	    	metasFieldValue = typeSpec === "VOD" ? "Metas" : "metas" ;
+	    	tagsFieldValue = typeSpec === "VOD" ? "Tags" : "tags" ;
 		    $.each($scope.apiResponseObject, function(key, element) {
 			    switch(key){
 			    	case metasFieldValue:
 			    		metaArray = element;
-			    		if(typeSpec == "VOD"){
+			    		if(typeSpec === "VOD"){
 					    	$.each(metaArray, function(index, metaObj) {
 					    		$scope.apiSndLevelKeys.push({field:metaObj.Key, type:"meta"});
 					    	});
@@ -335,7 +335,7 @@ angular.module('xmlvsApiValidationApp')
 			    		break;
 			    	case tagsFieldValue:
 			    		metaArray = element;
-			    		if(typeSpec == "VOD"){
+			    		if(typeSpec === "VOD"){
 					    	$.each(metaArray, function(index, metaObj) {
 					    		$scope.apiSndLevelKeys.push({field:metaObj.Key, type:"tag"});
 					    	});

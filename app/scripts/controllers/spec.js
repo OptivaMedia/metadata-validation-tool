@@ -16,15 +16,18 @@ angular.module('xmlvsApiValidationApp')
   	specService,
   	apiResponseService,
   	ingestService) {
-    
-  	// Call the env initialization routine
-  	init();
+
   	
+  	$( document ).ready(function() {
+	  	// Call the env initialization routine
+  		init();
+	});
 
 	function init() {
 		console.log("ENTRA-init()");
 		// Getting the uploadedFiles array
 		$scope.files = specService.getSpecFilesArray();
+
 		console.log("$scope.files - AFTER");
 		console.log($scope.files);
 		$scope.specUploaded = $.isEmptyObject(specService.getSpec()) ? false : true;
@@ -41,33 +44,31 @@ angular.module('xmlvsApiValidationApp')
 	}
 
 	// Watching uploads from the user
-	$scope.$watch('files', function () {
-		console.log("$scope.$watch -> $scope.files");
+    $scope.$watch('file', function () {
+        console.log("$scope.$watch -> $scope.file");
 		// Enable alerts with every new file upload attempt
     	$scope.enableErrorAlerts = true;
-		// Avoiding entering in the upload function when there's already a spec uploaded.
-        if($.isEmptyObject(specService.getSpec())) {
-        	$scope.upload($scope.files);
-        }
-    });
-    $scope.$watch('file', function () {
         if ($scope.file != null) {
             $scope.files = [$scope.file]; 
+        }
+        // Avoiding entering in the upload function when there's already a spec uploaded.
+        if($.isEmptyObject(specService.getSpec())) {
+        	$scope.upload($scope.files);
         }
     });
 
     $scope.removeErrorAlerts = function() {
     	$scope.enableErrorAlerts = false;
-	}
+	};
 
     // Delete file item from the file list.
 	$scope.deleteFile = function(fileName) {
 		console.log("ENTRA-deleteFile()");
 		$scope.files = $.grep($scope.files, function(fileObject) {
-			return fileObject.name != fileName;
+			return fileObject.name !== fileName;
 		});
 		// When the user deletes all files, unset specObj in specService
-		if($scope.files.length == 0){
+		if($scope.files.length === 0){
 			specService.unsetSpec();
 			$scope.specUploaded = false;
 			/*Disable API and Ingest sections
@@ -77,7 +78,7 @@ angular.module('xmlvsApiValidationApp')
 		}
 		// Re-setting specService Spec array to be the result of the deletion
 		specService.setSpecFilesArray($scope.files);
-	}
+	};
 
     $scope.upload = function (files) {
 		console.log("ENTRA-upload()");
@@ -115,7 +116,7 @@ angular.module('xmlvsApiValidationApp')
 					    console.log("err.message");
 					    console.log(err.message);
 					}
-				}
+				};
             }
         }
     };
@@ -123,7 +124,7 @@ angular.module('xmlvsApiValidationApp')
     $scope.goToApiSection = function() {
 		console.log("ENTRA-goToApiSection()");
     	$location.url('/apiresponse');
-    }
+    };
 
 	function enableApiNavSection() {
 		console.log("ENTRA-enableApiNavSection()");
@@ -162,7 +163,7 @@ angular.module('xmlvsApiValidationApp')
 		// Create the return object
 		var obj = {};
 
-		if (xml.nodeType == 1) { // element
+		if (xml.nodeType === 1) { // element
 			// do attributes
 			if (xml.attributes.length > 0) {
 			obj["@attributes"] = {};
@@ -171,7 +172,7 @@ angular.module('xmlvsApiValidationApp')
 					obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
 				}
 			}
-		} else if (xml.nodeType == 3) { // text
+		} else if (xml.nodeType === 3) { // text
 			obj = xml.nodeValue;
 		}
 
@@ -180,10 +181,10 @@ angular.module('xmlvsApiValidationApp')
 			for(var i = 0; i < xml.childNodes.length; i++) {
 				var item = xml.childNodes.item(i);
 				var nodeName = item.nodeName;
-				if (typeof(obj[nodeName]) == "undefined") {
+				if (typeof(obj[nodeName]) === "undefined") {
 					obj[nodeName] = xmlToJson(item);
 				} else {
-					if (typeof(obj[nodeName].push) == "undefined") {
+					if (typeof(obj[nodeName].push) === "undefined") {
 						var old = obj[nodeName];
 						obj[nodeName] = [];
 						obj[nodeName].push(old);
@@ -193,6 +194,6 @@ angular.module('xmlvsApiValidationApp')
 			}
 		}
 		return obj;
-	};
+	}
 
   });
