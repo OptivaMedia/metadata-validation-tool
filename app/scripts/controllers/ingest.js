@@ -18,12 +18,14 @@ angular.module('xmlvsApiValidationApp')
   	ingestService,
   	resultsService) {
     
+  	var xmlToJsonDepthCount = 0;
+
   	$( document ).ready(function() {
 	  	// Call the env initialization routine
   		init();
 	});
   	
-  	// INTERNAL FUNCTIONS AND METHODS.
+  	// PRIVATE FUNCTIONS AND METHODS.
 
 	function init () {
 		console.log("ENTRA-init()");
@@ -32,6 +34,10 @@ angular.module('xmlvsApiValidationApp')
 		$scope.ingestFileUploaded = $.isEmptyObject(ingestService.getIngestObj()) ? false : true;
 	    // Error alerts enabled in initial state
 	    $scope.enableErrorAlerts = true;
+    	$scope.notEPG = false;
+    	$scope.notVOD = false;
+
+    	$scope.fileTypeOk = ingestService.isFileTypeOk();
 
 		// Toggle active navbar component
 	  	var selector = '.nav li';
@@ -168,9 +174,13 @@ angular.module('xmlvsApiValidationApp')
     }
 
 	// Changes XML to JSON
-	function xmlToJson (xml) {
+	var xmlToJson = function (xml) {
 		
 		console.log("ENTRA-xmlToJson()");
+
+		// Increase depth level of the function
+		xmlToJsonDepthCount++;
+
 		// Create the return object
 		var obj = {};
 
@@ -204,8 +214,16 @@ angular.module('xmlvsApiValidationApp')
 				}
 			}
 		}
+
+		// Decrease depth level of the function
+		xmlToJsonDepthCount--;
+		// Callback to process obj, when recursive function is done.
+		if ( xmlToJsonDepthCount === 0 ) {			
+			processIngestJson(obj);
+		}
+
 		return obj;
-	}
+	};
 
 	function goToResultsSection () {
     	$location.url('/results');
@@ -218,6 +236,28 @@ angular.module('xmlvsApiValidationApp')
 		$("#results-section").removeProp("disabled");
 	}
 
+	function enableApiNavSection () {
+		console.log("ENTRA-enableApiNavSection()");
+		//Enable API section
+		$("#api-section").removeClass("disabled");
+		$("#api-section").removeProp("disabled");
+	}
+
+	function disableApiNavSection () {
+		// Unset apiResponse data structures
+		apiResponseService.unsetApiResponse();
+		apiResponseService.unsetApiFilesArray();
+		// Disable API section
+		$("#api-section").addClass('disabled');
+	}
+
+	function disableResultsSection () {
+		// Unset results data structures
+		resultsService.unsetResults();
+		// Disable API section
+		$("#results-section").addClass('disabled');
+	}
+	
 	function extractVodAssetType () {
 		var type = "",
 			ingestObj = ingestService.getIngestObj(), 
@@ -238,13 +278,6 @@ angular.module('xmlvsApiValidationApp')
 
 		return type;
 	}
-
-	/*
-	function extractEPGEventType (epgFieldsObj) {
-		var type = "",
-			ingestObj = ingestService.getIngestObj(); 
-	}
-	*/
 
 	function checkIngestFields ( field, assetType, fieldProperties, fieldsArray ) {
 		
@@ -276,7 +309,7 @@ angular.module('xmlvsApiValidationApp')
 		return status;
 	}
 
-	// FUNCTIONS AND METHODS AVAILABLE TO USE THROUGH $SCOPE
+	// PUBLIC FUNCTIONS AND METHODS AVAILABLE THROUGH $SCOPE
 
 	$scope.goToResultsSection = function () {
 		console.log("ENTRA-goToResultsSection()");
@@ -299,6 +332,11 @@ angular.module('xmlvsApiValidationApp')
 
     $scope.removeErrorAlerts = function () {
     	$scope.enableErrorAlerts = false;
+    	if ( $scope.notEPG === true ) {
+    		$scope.notEPG = false;
+    	} else if ( $scope.notVOD === true ) {
+    		$scope.notVOD = false;
+    	}
 	};
 
     // Delete file item from the file list.
@@ -310,9 +348,17 @@ angular.module('xmlvsApiValidationApp')
 		// When the user deletes all files, unset specObj in specService
 		if ($scope.files.length === 0) {
 			ingestService.unsetIngestObj();
+			// Hide validation button
 			$scope.ingestFileUploaded = false;
-			//Disable API section and unset apiResponse data structures.
-			// disableApiResponseSection();
+			// Resetting fileType flag, locally and in ingestService.
+			$scope.fileTypeOk = false;
+			ingestService.setFileTypeOk(false);
+			// hideHtmlElement("#ingest-button-container");
+			//Enable API section, since now is possible to validate either an ingest
+			// or an apiResponse.
+			enableApiNavSection();
+			// Disable results, in case we are moving trough windows.
+			disableResultsSection();
 		}
 		// Re-setting specService Spec array to be the result of the deletion
 		ingestService.setIngestFilesArray($scope.files);
@@ -320,6 +366,9 @@ angular.module('xmlvsApiValidationApp')
 
     $scope.upload = function (files) {
 		console.log("ENTRA-upload()");
+		var xmlDoc,
+			xmlObject;
+
         if (files && files.length) {
             for (var i = 0; i < files.length; i++) {
 				var file = files[i];
@@ -331,33 +380,12 @@ angular.module('xmlvsApiValidationApp')
 
 				read.onloadend = function () {
 					try {
-						// FOR XML FILE
-						var xmlDoc = $.parseXML(read.result);
-						// Assuming xmlDoc is the XML DOM Document
-						// var xmlObject = JSON.stringify(xmlToJson(xmlDoc));
-						var xmlObject = xmlToJson(xmlDoc);
-						if (xmlObject) {
-							console.log("Specification Object: ");
-							console.log(xmlObject);
-							// Changing flag to show 'continue' button
-							$scope.ingestFileUploaded = true;
-							// Making the spec available trough the specService
-							ingestService.setIngestObj(xmlObject);
-							// Updating filesSpecArray in specService
-							ingestService.addIngestFile(file);
-
-							if ( specService.getSpecType() === "EPG" ) {
-								console.log("Spec is EPG");
-								/*console.log("VodAssetType");
-		    	  				console.log(extractEPGAssetType());
-		    	  				ingestService.setVodAssetType(extractVodAssetType());*/
-							} else if ( specService.getSpecType() === "VOD" ) {
-								console.log("Spec is VOD");
-								console.log("VodAssetType");
-		    	  				console.log(extractVodAssetType());
-		    	  				ingestService.setVodAssetType(extractVodAssetType());
-							}
-						}
+						// Updating filesSpecArray in specService
+						ingestService.addIngestFile(file);
+						// Parsing XML file
+						xmlDoc = $.parseXML(read.result);
+						// Convert parsed XML to JSON
+						$scope.xmlParsed2Json = xmlToJson(xmlDoc);
 					}
 					catch (err) { // Error in parsing xml
 					    console.log("err.message");
@@ -366,6 +394,66 @@ angular.module('xmlvsApiValidationApp')
 				};
             }
         }
+    };
+
+    var processIngestJson = function (xmlObject){
+		console.log("ENTRA processIngestJson");
+    	
+    	var fileName = ingestService.getFileName();
+
+		if ( xmlObject ) {
+			
+			// Making the spec available trough the specService
+			ingestService.setIngestObj(xmlObject);
+
+			// Handle wrong format file uploads.
+			if ( specService.getSpecType() === "EPG" ) {
+				console.log("Spec is EPG");
+				if ( ingestService.getIngestObjType() !== "EPG" ) {
+					console.log("@@@notEPG@@@");
+					$scope.notEPG = true;
+					$scope.$apply();
+				} else { // No errors.
+					// Update file type locally and in service.
+    				$scope.fileTypeOk = true;
+					ingestService.setFileTypeOk(true);
+					$scope.$apply();
+				}
+			} else if ( specService.getSpecType() === "VOD" ) {
+				console.log("Spec is VOD");
+				console.log("ingestService.getIngestObjType()");
+				console.log(ingestService.getIngestObjType());
+				if ( ingestService.getIngestObjType() !== "VOD" ) {
+					console.log("@@@notVOD@@@");
+					$scope.notVOD = true;
+					$scope.$apply();
+				} else {
+					// No errors.
+    				$scope.fileTypeOk = true;
+					ingestService.setFileTypeOk(true);
+    				console.log("VodAssetType");
+					console.log(extractVodAssetType());
+					ingestService.setVodAssetType(extractVodAssetType());
+				}
+			}
+
+			if ( $scope.fileTypeOk ) {
+				// Show 'validate' button.
+				$scope.ingestFileUploaded = true;
+			} else {
+				// Remove file to allow uploads again.
+	    		if ( fileName !== "" ) {
+	    			$scope.deleteFile(fileName);
+	    		}
+			}
+
+			// Update $scope variables.
+			$scope.$apply();
+
+			// Disable API section, since an ingest file has been
+	    	// uploaded to validate.
+			disableApiNavSection();
+		}
     };
 
     $scope.validateIngestFile = function () {
@@ -545,7 +633,8 @@ angular.module('xmlvsApiValidationApp')
 
 	    	var	ingestFieldsObjectsArray 	= getEPGIngestFields(), // Get arrays of fields from XML Ingest file.
 	    		epgEventType 				= "Unknown",
-	    		epgValidationResultsObj 	= {};
+	    		epgValidationResultsObj 	= {},
+	    		parsedName					= "";
 			
 			// Validation of all Asset classes fields vs Spec.
 		    if ( specObject ) {
@@ -561,14 +650,25 @@ angular.module('xmlvsApiValidationApp')
 	    					// Repopulating resultObj with validation info of the event in turn.
 	    					resultObj.field = epgSpecField;
 	    					// Getting the event type in turn
-	    					epgEventType = epgIngestFieldsObj["series-id"] ? "Episode" : "Event" ;
+	    					/*
+	    					console.log("@@@@epgIngestFieldsObj@@@@");
+	    					console.log(epgIngestFieldsObj);
+
+	    					console.log('epgIngestFieldsObj.hasOwnProperty(series-id)');
+	    					console.log(epgIngestFieldsObj.hasOwnProperty("series-id"));
+	    					*/
+
+	    					epgEventType = epgIngestFieldsObj.fieldsArray.indexOf("series-id") >= 0 ? "Episode" : "Event" ;
 	    					// Perform the check. Call to the method that validates presence of required fields. Taking into consideration episodes.
 	    					resultObj.status = checkIngestFields ( epgSpecField, epgEventType, epgSpecFieldAttrObj, epgIngestFieldsObj.fieldsArray );
+	    					
+	    					// Parse event names to avoid having weird characters in results.
+	    					parsedName = decodeURIComponent(escape(epgIngestFieldsObj.name));
 	    					// Creating, or updating the result array
-				    		if ( epgValidationResultsObj[epgIngestFieldsObj.name] && epgValidationResultsObj[epgIngestFieldsObj.name].constructor === Array ) {
-				    			epgValidationResultsObj[epgIngestFieldsObj.name].push(resultObj);
+				    		if ( epgValidationResultsObj[parsedName + "|" + epgEventType] && epgValidationResultsObj[parsedName + "|" + epgEventType].constructor === Array ) {
+				    			epgValidationResultsObj[parsedName + "|" + epgEventType].push(resultObj);
 				    		} else {
-				    			epgValidationResultsObj[epgIngestFieldsObj.name] = [resultObj];
+				    			epgValidationResultsObj[parsedName + "|" + epgEventType] = [resultObj];
 				    		}
 	    					resultObj = {};
 	    				} );

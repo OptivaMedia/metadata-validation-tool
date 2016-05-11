@@ -111,3 +111,36 @@ body {
   padding-left: 10px;
   cursor:pointer;
 }
+
+/*Ingest description table*/
+#event-description-table{
+  width: 100%;
+}
+
+/*Results view*/
+.desc-box{
+  width: 150px;
+  margin-bottom: 0;
+}
+.code-reference{
+  margin-top: 20px;
+}
+#search-group {
+  margin-bottom: 20px;
+}
+.status-indicator {
+  cursor: default;
+  outline: none!important;
+  vertical-align: middle;
+}
+.status-container{
+  margin-bottom: 5px;
+    margin-top: 5px;
+}
+.asset-class-group {
+  margin-top: 120px;
+  text-align: left;
+}
+#missing-notification {
+  color: darkred;
+}

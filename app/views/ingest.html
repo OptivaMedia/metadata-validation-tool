@@ -9,14 +9,23 @@
     </div>
     
     <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
-
+    
     <div class="alert alert-danger" ng-show="myForm.dropbox.$error.pattern && enableErrorAlerts">
       <a class="close" aria-label="close" ng-click="removeErrorAlerts()">&times;</a>
       <strong>Error!</strong> The file you tried to upload does not have a XML format. Please upload a XML file.
     </div>
 
-    <div class="alert alert-success" ng-hide="!files || files.length == 0">
-      <p>Files uploaded:</p>
+    <div id="not-vod-error" ng-model="notVOD" class="alert alert-danger" ng-show="notVOD && enableErrorAlerts">
+      <a class="close" aria-label="close" ng-click="removeErrorAlerts()">&times;</a>
+      <strong>Error!</strong> The ingest file you tried to upload is not VOD. Please upload an VOD ingest file.
+    </div>
+
+    <div id="not-epg-error" ng-model="notEPG" class="alert alert-danger" ng-show="notEPG && enableErrorAlerts">
+      <a class="close" aria-label="close" ng-click="removeErrorAlerts()">&times;</a>
+      <strong>Error!</strong> The ingest file you tried to upload is not EPG. Please upload an EPG ingest file.
+    </div>
+    <div class="alert alert-success" ng-hide="!files || files.length == 0 || !fileTypeOk">
+      <p>File uploaded:</p>
       <ul>
         <li ng-repeat="f in files track by $index" style="font:smaller; list-style-type: none;">
           <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
@@ -25,6 +34,8 @@
         </li>
       </ul>
     </div>
-    <button type="button" class="btn btn-primary btn-lg" ng-click="validateIngestFile()" ng-hide="!ingestFileUploaded">Validate</button>
+    <div id="ingest-button-container" ng-model="ingestFileUploaded" ng-show="ingestFileUploaded">
+      <button id="ingest-validation-button" type="button" class="btn btn-primary btn-lg" ng-click="validateIngestFile()">Validate</button>
+    </div>
   </form>
 </div>

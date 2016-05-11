@@ -16,12 +16,15 @@ angular.module('xmlvsApiValidationApp')
   	resultsService, 
   	$location,
   	specService, 
-  	apiResponseService) {
+  	apiResponseService,
+  	ingestService) {
   	
   	$( document ).ready(function() {
 	  	// Call the env initialization routine
   		init();
 	});
+
+  	// PRIVATE FUNCTIONS AND METHODS.
 
 	function init() {
     	console.log("FUNCTION: init()");
@@ -48,6 +51,144 @@ angular.module('xmlvsApiValidationApp')
 			$("#api-section").addClass('active');
 		}
 	}
+
+    
+
+    function goToResultsSection(){
+    	$location.url('/results');
+    }
+
+    function checkForMissingFieldsInSpec() {
+    	console.log("FUNCTION: checkForMissingFieldsInSpec");
+    	var specObject = specService.getSpec(),
+    		missingFieldsResult = [],
+    		filteredSpecApiFields = [],
+    		fieldSpecObj,
+    		altFieldSpecObj,
+    		api2ndLvlApiFields = [],
+    		realApiResponseApiFields;
+
+			// GETTING API FIELD KEYS FROM SPECOBJECT.
+			$.each(specObject, function(key) {
+    			fieldSpecObj = specObject[key];
+    			if( fieldSpecObj && !$.isEmptyObject(fieldSpecObj) ) {
+	    			// Check it is a real specObj, with a fieldApi defined
+	    			if( key !== "#text" && fieldSpecObj["@attributes"].fieldApi ) {
+	    				filteredSpecApiFields.push(fieldSpecObj["@attributes"].fieldApi);
+	    				altFieldSpecObj = fieldSpecObj.altField;
+	    				// Check the specObj has an alternative field.
+	    				if(altFieldSpecObj){	
+	    					filteredSpecApiFields.push(altFieldSpecObj["@attributes"].fieldApi);
+	    				}
+	    			}
+	    		}
+			});
+    	// Getting 2nd level api response fields.
+    	$.each($scope.apiSndLevelKeys, function(index, fieldObj){
+			api2ndLvlApiFields.push(fieldObj.field);
+		});
+		// Concat 2st and 2nd lvl api response fields.
+    	realApiResponseApiFields = $scope.apiFstLevelKeys.concat(api2ndLvlApiFields);
+
+    	// Check for Api response fields missing in Specification.
+		$.each(realApiResponseApiFields, function(index, element) {
+			if( $.inArray(element, filteredSpecApiFields) < 0 ) {
+				missingFieldsResult.push(element);
+			}
+		});
+
+		return missingFieldsResult;
+    }
+
+    function enableResultsNavSection(){
+    	console.log("FUNCTION: enableResultsNavSection");
+		//Enable API section
+		$("#results-section").removeClass("disabled");
+		$("#results-section").removeProp("disabled");
+		// Changing flag to show 'continue' button
+		$scope.specUploaded = true;
+	}
+
+	function enableIngestNavSection () {
+		console.log("ENTRA-enableIngestNavSection()");
+		//Enable Ingest section
+		$("#ingest-section").removeClass("disabled");
+		$("#ingest-section").removeProp("disabled");
+	}
+
+	function disableIngestNavSection () {
+		// Unset apiResponse data structures
+		ingestService.unsetIngestObj();
+		ingestService.unsetIngestFilesArray();
+		// Disable API section
+		$("#ingest-section").addClass('disabled');
+	}
+
+	function disableResultsSection () {
+		// Unset results data structures
+		resultsService.unsetResults();
+		// Disable API section
+		$("#results-section").addClass('disabled');
+	}
+
+    /**
+	 * @ngdoc function
+	 * @name getApiFields
+	 * @description
+	 * Gets the fields that are going to be validated againts Spec.
+	*/
+    function getApiFields(){
+    	console.log("FUNCTION: getApiFields");
+
+	    var metaArray,
+	    	metasFieldValue,
+	    	tagsFieldValue,
+	    	typeSpec = specService.getSpecType();
+
+	    if(typeSpec) {
+	    	metasFieldValue = typeSpec === "VOD" ? "Metas" : "metas" ;
+	    	tagsFieldValue = typeSpec === "VOD" ? "Tags" : "tags" ;
+		    $.each($scope.apiResponseObject, function(key, element) {
+			    switch(key){
+			    	case metasFieldValue:
+			    		metaArray = element;
+			    		if(typeSpec === "VOD"){
+					    	$.each(metaArray, function(index, metaObj) {
+					    		$scope.apiSndLevelKeys.push({field:metaObj.Key, type:"meta"});
+					    	});
+				    	}else{
+				    		$.each(metaArray, function(key, metaObj) {
+					    		$scope.apiSndLevelKeys.push({field:key, type:"meta"});
+					    	});
+				    	}
+			    		break;
+			    	case tagsFieldValue:
+			    		metaArray = element;
+			    		if(typeSpec === "VOD"){
+					    	$.each(metaArray, function(index, metaObj) {
+					    		$scope.apiSndLevelKeys.push({field:metaObj.Key, type:"tag"});
+					    	});
+				    	}else{
+				    		$.each(metaArray, function(key, metaObj) {
+					    		$scope.apiSndLevelKeys.push({field:key, type:"tag"});
+					    	});
+				    	}
+			    		break;
+			    	case "extra_params":
+			    		metaArray = element;
+			    		$.each(metaArray, function(key, metaObj) {
+				    		$scope.apiSndLevelKeys.push({field:key, type:"extra"});
+				    	});
+			    		break;
+			    	default:
+			    		$scope.apiFstLevelKeys.push(key);
+			    }
+				metaArray = [];
+			});
+		}
+    }
+
+	// PUBLIC FUNCTIONS AND METHODS AVAILABLE THROUGH $SCOPE
 
     //Monitor changes in the file value, in the UI.
     $scope.$watch('fileApi', function () {
@@ -100,6 +241,9 @@ angular.module('xmlvsApiValidationApp')
 					    	apiResponseService.setApiResponse($scope.apiResponseObject);
 					    	// Add Api Response file to Api Response Files Array service object.
 					    	apiResponseService.setApiFilesArray(files);
+					    	// Disable ingest section, since an api response file has been
+					    	// uploaded to validate
+					    	disableIngestNavSection();
 					    }
 					}
 					catch (err) { // Error in parsing xml
@@ -122,6 +266,11 @@ angular.module('xmlvsApiValidationApp')
 			// Clear apiResponse Obj
 			apiResponseService.unsetApiResponse();
 			$scope.apiResponseLoaded = false;
+			//Enable ingest section, since now is possible to validate either an ingest
+			// or an apiResponse.
+			enableIngestNavSection();
+			// Disable results, in case we are moving trough windows.
+			disableResultsSection();
 		}
 		// Re-setting apiResponseService files array to be the result of the deletion
 		apiResponseService.setApiFilesArray($scope.apiFiles);
@@ -246,116 +395,4 @@ angular.module('xmlvsApiValidationApp')
     	goToResultsSection();
 
     };
-
-    function goToResultsSection(){
-    	$location.url('/results');
-    }
-
-    function checkForMissingFieldsInSpec() {
-    	console.log("FUNCTION: checkForMissingFieldsInSpec");
-    	var specObject = specService.getSpec(),
-    		missingFieldsResult = [],
-    		filteredSpecApiFields = [],
-    		fieldSpecObj,
-    		altFieldSpecObj,
-    		api2ndLvlApiFields = [],
-    		realApiResponseApiFields;
-
-			// GETTING API FIELD KEYS FROM SPECOBJECT.
-			$.each(specObject, function(key) {
-    			fieldSpecObj = specObject[key];
-    			if( fieldSpecObj && !$.isEmptyObject(fieldSpecObj) ) {
-	    			// Check it is a real specObj, with a fieldApi defined
-	    			if( key !== "#text" && fieldSpecObj["@attributes"].fieldApi ) {
-	    				filteredSpecApiFields.push(fieldSpecObj["@attributes"].fieldApi);
-	    				altFieldSpecObj = fieldSpecObj.altField;
-	    				// Check the specObj has an alternative field.
-	    				if(altFieldSpecObj){	
-	    					filteredSpecApiFields.push(altFieldSpecObj["@attributes"].fieldApi);
-	    				}
-	    			}
-	    		}
-			});
-    	// Getting 2nd level api response fields.
-    	$.each($scope.apiSndLevelKeys, function(index, fieldObj){
-			api2ndLvlApiFields.push(fieldObj.field);
-		});
-		// Concat 2st and 2nd lvl api response fields.
-    	realApiResponseApiFields = $scope.apiFstLevelKeys.concat(api2ndLvlApiFields);
-
-    	// Check for Api response fields missing in Specification.
-		$.each(realApiResponseApiFields, function(index, element) {
-			if( $.inArray(element, filteredSpecApiFields) < 0 ) {
-				missingFieldsResult.push(element);
-			}
-		});
-
-		return missingFieldsResult;
-    }
-
-    function enableResultsNavSection(){
-    	console.log("FUNCTION: enableResultsNavSection");
-		//Enable API section
-		$("#results-section").removeClass("disabled");
-		$("#results-section").removeProp("disabled");
-		// Changing flag to show 'continue' button
-		$scope.specUploaded = true;
-	}
-
-    /**
-	 * @ngdoc function
-	 * @name getApiFields
-	 * @description
-	 * Gets the fields that are going to be validated againts Spec.
-	*/
-    function getApiFields(){
-    	console.log("FUNCTION: getApiFields");
-
-	    var metaArray,
-	    	metasFieldValue,
-	    	tagsFieldValue,
-	    	typeSpec = specService.getSpecType();
-
-	    if(typeSpec) {
-	    	metasFieldValue = typeSpec === "VOD" ? "Metas" : "metas" ;
-	    	tagsFieldValue = typeSpec === "VOD" ? "Tags" : "tags" ;
-		    $.each($scope.apiResponseObject, function(key, element) {
-			    switch(key){
-			    	case metasFieldValue:
-			    		metaArray = element;
-			    		if(typeSpec === "VOD"){
-					    	$.each(metaArray, function(index, metaObj) {
-					    		$scope.apiSndLevelKeys.push({field:metaObj.Key, type:"meta"});
-					    	});
-				    	}else{
-				    		$.each(metaArray, function(key, metaObj) {
-					    		$scope.apiSndLevelKeys.push({field:key, type:"meta"});
-					    	});
-				    	}
-			    		break;
-			    	case tagsFieldValue:
-			    		metaArray = element;
-			    		if(typeSpec === "VOD"){
-					    	$.each(metaArray, function(index, metaObj) {
-					    		$scope.apiSndLevelKeys.push({field:metaObj.Key, type:"tag"});
-					    	});
-				    	}else{
-				    		$.each(metaArray, function(key, metaObj) {
-					    		$scope.apiSndLevelKeys.push({field:key, type:"tag"});
-					    	});
-				    	}
-			    		break;
-			    	case "extra_params":
-			    		metaArray = element;
-			    		$.each(metaArray, function(key, metaObj) {
-				    		$scope.apiSndLevelKeys.push({field:key, type:"extra"});
-				    	});
-			    		break;
-			    	default:
-			    		$scope.apiFstLevelKeys.push(key);
-			    }
-				metaArray = [];
-			});
-		}
-    }
 });

@@ -79,6 +79,22 @@ angular.module('xmlvsApiValidationApp')
 	ingest.unsetIngestFilesArray = function() {
 		ingestFilesArray = [];
 	};
-
+	ingest.getFileName = function() {
+		var fileName = "";
+		if ( ingestFilesArray.length === 1 ) {
+			fileName = ingestFilesArray[0].name;
+		}
+		return fileName;
+	};
+	ingest.isFileTypeOk = function () {
+		var response = false;
+		if ( ingest.hasOwnProperty('fileTypeOk') ) {
+			response = ingest.fileTypeOk;
+		}
+		return response;
+	}
+	ingest.setFileTypeOk = function (value) {
+		ingest.fileTypeOk = value;
+	}
 	return ingest;
 });

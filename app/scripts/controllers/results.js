@@ -11,6 +11,7 @@ angular.module('xmlvsApiValidationApp')
   .controller('ResultsCtrl', function (
   	$scope,
   	specService,
+  	apiResponseService,
   	ingestService,
   	resultsService) {
 
@@ -22,21 +23,37 @@ angular.module('xmlvsApiValidationApp')
   	// PRIVATE FUNCTIONS AND METHODS.
 
 	function init () {
-		
-		$scope.searchField = "";
-		$scope.validationResults = resultsService.getResults();
 		console.log("validationResults");
 		console.log($scope.validationResults);
-		$scope.specType = specService.getSpecType();
-		$scope.resultType = resultsService.getResultType();
-		$scope.vodAssetType = "";
 
-		if ( $scope.resultType === "INGEST" ){
-			if ( $scope.specType === "VOD" ) {
+		$scope.specObj = specService.getSpec();
+		$scope.apiResponseObj = apiResponseService.getApiResponse();
+		$scope.ingestObj = ingestService.getIngestObj();
+		$scope.searchField = "";
+		$scope.allowResults = false;
 
-				$scope.vodAssetType = ingestService.getVodAssetType();
-			} else if ($scope.specType === "EPG") {
-				console.log("INGEST & EPG");
+		if ( !$.isEmptyObject($scope.specObj) && ( !$.isEmptyObject($scope.apiResponseObj) || !$.isEmptyObject($scope.ingestObj)) ) {
+			$scope.allowResults = true;
+		}
+
+		if ( $scope.allowResults ) {
+			$scope.validationResults = resultsService.getResults();
+			$scope.specType = specService.getSpecType();
+			$scope.resultType = resultsService.getResultType();
+			$scope.vodAssetType = "";
+			
+
+
+
+			if ( $scope.resultType === "INGEST" ){
+				if ( $scope.specType === "VOD" ) {
+
+					$scope.vodAssetType = ingestService.getVodAssetType();
+				} else if ($scope.specType === "EPG") {
+					console.log("INGEST & EPG");
+				}
+			} else if ( $scope.resultType === "API" ) {
+
 			}
 		}
 		
@@ -56,22 +73,22 @@ angular.module('xmlvsApiValidationApp')
 		var fieldClass= "";
 		switch(value){
 			case "OK": //Field present in Ingest or API file.
-				fieldClass = "btn-success";
+				fieldClass = "label-success";
 				break;
 			case "NOK": //Field NOT present in Ingest or API file, but required.
-				fieldClass = "btn-danger";
+				fieldClass = "label-danger";
 				break;
 			case "M&NR": //Missing & Not Required: Field NOT present in Ingest or API file, and NOT required.
-				fieldClass = "btn-warning";
+				fieldClass = "label-warning";
 				break;
-			case "AFNS": //Api Field Not in Spec: The info of the correspondant field in Kaltura's API is not in Spec.
-				fieldClass = "btn-warning";
+			case "AFNS": //Api Field Not Specified in Spec: The info of the correspondant field in Kaltura's API is not in Spec.
+				fieldClass = "label-warning";
 				break;
 			case "NIS": //Not In Spec: Field found in Kaltura's API but does not has a correspondant in Spec.
-				fieldClass = "btn-danger";
+				fieldClass = "label-danger";
 				break;
 			default:
-				fieldClass = "btn-secondary";
+				fieldClass = "label-secondary";
 		}
 		return fieldClass;
 	};
