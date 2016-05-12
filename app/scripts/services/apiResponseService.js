@@ -49,6 +49,16 @@ angular.module('xmlvsApiValidationApp')
 	apiResponseService.unsetApiFilesArray = function(){
 		apiFilesArray = [];
 	};
+	apiResponseService.isFileTypeOk = function () {
+		var response = false;
+		if ( apiResponseService.hasOwnProperty('fileTypeOk') ) {
+			response = apiResponseService.fileTypeOk;
+		}
+		return response;
+	}
+	apiResponseService.setFileTypeOk = function (value) {
+		apiResponseService.fileTypeOk = value;
+	}
 
 	return apiResponseService;
 });

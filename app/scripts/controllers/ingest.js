@@ -38,6 +38,7 @@ angular.module('xmlvsApiValidationApp')
 	    $scope.enableErrorAlerts = true;
     	$scope.notEPG = false;
     	$scope.notVOD = false;
+    	$scope.uploadError = false;
 
     	$scope.fileTypeOk = ingestService.isFileTypeOk();
 
@@ -338,6 +339,8 @@ angular.module('xmlvsApiValidationApp')
     		$scope.notEPG = false;
     	} else if ( $scope.notVOD === true ) {
     		$scope.notVOD = false;
+    	} else if ( $scope.uploadError === true ) {
+    		$scope.uploadError = false;
     	}
 	};
 
@@ -390,8 +393,11 @@ angular.module('xmlvsApiValidationApp')
 						$scope.xmlParsed2Json = xmlToJson(xmlDoc);
 					}
 					catch (err) { // Error in parsing xml
-					    console.log("err.message");
+					    console.log("err.message =");
 					    console.log(err.message);
+					    $scope.uploadError = true;
+					    $scope.$apply();
+					    $scope.deleteFile(file.name);
 					}
 				};
             }
@@ -412,7 +418,7 @@ angular.module('xmlvsApiValidationApp')
 			if ( specService.getSpecType() === "EPG" ) {
 				console.log("Spec is EPG");
 				if ( ingestService.getIngestObjType() !== "EPG" ) {
-					console.log("@@@notEPG@@@");
+					console.log("notEPG");
 					$scope.notEPG = true;
 					$scope.$apply();
 				} else { // No errors.
@@ -426,7 +432,7 @@ angular.module('xmlvsApiValidationApp')
 				console.log("ingestService.getIngestObjType()");
 				console.log(ingestService.getIngestObjType());
 				if ( ingestService.getIngestObjType() !== "VOD" ) {
-					console.log("@@@notVOD@@@");
+					console.log("notVOD");
 					$scope.notVOD = true;
 					$scope.$apply();
 				} else {

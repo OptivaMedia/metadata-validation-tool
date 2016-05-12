@@ -44,6 +44,8 @@ angular.module('xmlvsApiValidationApp')
 
 		// Error alerts enabled in initial state
 	    $scope.enableApiFileErrorAlerts = true;
+    	$scope.uploadError = false;
+    	$scope.fileTypeOk = apiResponseService.isFileTypeOk();
 
 	    // Toggle active navbar component
 	  	var selector = '.nav li';
@@ -208,6 +210,9 @@ angular.module('xmlvsApiValidationApp')
     $scope.removeApiErrorAlerts = function() {
     	console.log("FUNCTION: removeApiErrorAlerts");
     	$scope.enableApiFileErrorAlerts = false;
+    	if ( $scope.uploadError === true ) {
+    		$scope.uploadError = false;
+    	}
 	};
 
     /**
@@ -243,14 +248,21 @@ angular.module('xmlvsApiValidationApp')
 					    	apiResponseService.setApiResponse($scope.apiResponseObject);
 					    	// Add Api Response file to Api Response Files Array service object.
 					    	apiResponseService.setApiFilesArray(files);
+					    	// Update file type locally and in service.
+		    				$scope.fileTypeOk = true;
+							apiResponseService.setFileTypeOk(true);
+							$scope.$apply();
 					    	// Disable ingest section, since an api response file has been
 					    	// uploaded to validate
 					    	disableIngestNavSection();
 					    }
 					}
-					catch (err) { // Error in parsing xml
+					catch (err) { // Error in parsing json
 					    console.log("err.message");
 					    console.log(err.message);
+					    $scope.uploadError = true;
+					    $scope.$apply();
+					    $scope.deleteFile(file.name);
 					}    
 				};
             }
@@ -268,6 +280,9 @@ angular.module('xmlvsApiValidationApp')
 			// Clear apiResponse Obj
 			apiResponseService.unsetApiResponse();
 			$scope.apiResponseLoaded = false;
+			// Resetting fileType flag, locally and in ingestService.
+			$scope.fileTypeOk = false;
+			apiResponseService.setFileTypeOk(false);
 			//Enable ingest section, since now is possible to validate either an ingest
 			// or an apiResponse.
 			enableIngestNavSection();
