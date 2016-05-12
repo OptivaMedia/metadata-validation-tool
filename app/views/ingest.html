@@ -1,41 +1,46 @@
 <div class="container">
-  <div class="jumbotron">    
-    <h2>Upload your ingest file (XML):</h2>
+  <div ng-if="!isSpecLoaded" class="jumbotron go-spec-message">
+    <h2>There is no Specification file loaded in the system. Please, <a href="#/"> Go to the Spec section</a>, and Upload one, to continue to this section.</h2>
   </div>
-  <form name="myForm">
-    <div name="dropbox" ngf-drop ngf-select ng-model="file" class="drop-box" ngf-drag-over-class="'dragover'" 
-        ngf-multiple="false" ngf-accept="text/xml" ngf-pattern="'.xml'">
-          Drop XML metadata ingest files here, or click to upload
+  <div ng-show="isSpecLoaded">
+    <div class="jumbotron">    
+      <h2>Upload your ingest file (XML):</h2>
     </div>
-    
-    <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
-    
-    <div class="alert alert-danger" ng-show="myForm.dropbox.$error.pattern && enableErrorAlerts">
-      <a class="close" aria-label="close" ng-click="removeErrorAlerts()">&times;</a>
-      <strong>Error!</strong> The file you tried to upload does not have a XML format. Please upload a XML file.
-    </div>
+    <form name="myForm">
+      <div name="dropbox" ngf-drop ngf-select ng-model="file" class="drop-box" ngf-drag-over-class="'dragover'" 
+          ngf-multiple="false" ngf-accept="text/xml" ngf-pattern="'.xml'">
+            Drop XML metadata ingest files here, or click to upload
+      </div>
+      
+      <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+      
+      <div class="alert alert-danger" ng-show="myForm.dropbox.$error.pattern && enableErrorAlerts">
+        <a class="close" aria-label="close" ng-click="removeErrorAlerts()">&times;</a>
+        <strong>Error!</strong> The file you tried to upload does not have a XML format. Please upload a XML file.
+      </div>
 
-    <div id="not-vod-error" ng-model="notVOD" class="alert alert-danger" ng-show="notVOD && enableErrorAlerts">
-      <a class="close" aria-label="close" ng-click="removeErrorAlerts()">&times;</a>
-      <strong>Error!</strong> The ingest file you tried to upload is not VOD. Please upload an VOD ingest file.
-    </div>
+      <div id="not-vod-error" ng-model="notVOD" class="alert alert-danger" ng-show="notVOD && enableErrorAlerts">
+        <a class="close" aria-label="close" ng-click="removeErrorAlerts()">&times;</a>
+        <strong>Error!</strong> The ingest file you tried to upload is not VOD. Please upload an VOD ingest file.
+      </div>
 
-    <div id="not-epg-error" ng-model="notEPG" class="alert alert-danger" ng-show="notEPG && enableErrorAlerts">
-      <a class="close" aria-label="close" ng-click="removeErrorAlerts()">&times;</a>
-      <strong>Error!</strong> The ingest file you tried to upload is not EPG. Please upload an EPG ingest file.
-    </div>
-    <div class="alert alert-success" ng-hide="!files || files.length == 0 || !fileTypeOk">
-      <p>File uploaded:</p>
-      <ul>
-        <li ng-repeat="f in files track by $index" style="font:smaller; list-style-type: none;">
-          <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
-          {{f.name}} {{f.$error}} {{f.$errorParam}}
-          <span class="glyphicon glyphicon-remove remove-file-sym" ng-click="deleteFile(f.name)" aria-hidden="true"></span>
-        </li>
-      </ul>
-    </div>
-    <div id="ingest-button-container" ng-model="ingestFileUploaded" ng-show="ingestFileUploaded">
-      <button id="ingest-validation-button" type="button" class="btn btn-primary btn-lg" ng-click="validateIngestFile()">Validate</button>
-    </div>
-  </form>
-</div>
+      <div id="not-epg-error" ng-model="notEPG" class="alert alert-danger" ng-show="notEPG && enableErrorAlerts">
+        <a class="close" aria-label="close" ng-click="removeErrorAlerts()">&times;</a>
+        <strong>Error!</strong> The ingest file you tried to upload is not EPG. Please upload an EPG ingest file.
+      </div>
+      <div class="alert alert-success" ng-hide="!files || files.length == 0 || !fileTypeOk">
+        <p>File uploaded:</p>
+        <ul>
+          <li ng-repeat="f in files track by $index" style="font:smaller; list-style-type: none;">
+            <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+            {{f.name}} {{f.$error}} {{f.$errorParam}}
+            <span class="glyphicon glyphicon-remove remove-file-sym" ng-click="deleteFile(f.name)" aria-hidden="true"></span>
+          </li>
+        </ul>
+      </div>
+      <div id="ingest-button-container" ng-model="ingestFileUploaded" ng-show="ingestFileUploaded">
+        <button id="ingest-validation-button" type="button" class="btn btn-primary btn-lg" ng-click="validateIngestFile()">Validate</button>
+      </div>
+    </form>
+  </div> <!-- End of control container -->
+</div>  <!-- End of main container -->

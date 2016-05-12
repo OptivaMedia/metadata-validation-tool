@@ -31,6 +31,8 @@ angular.module('xmlvsApiValidationApp')
 		// Get apiResponseObj & apiResponse files already uploaded. If any.
 		$scope.apiFiles = apiResponseService.getApiFilesArray();
 	    $scope.apiResponseLoaded = false;
+	    // Control flag to show or hide upload section.
+		$scope.isSpecLoaded = $.isEmptyObject(specService.getSpec()) ? false : true;
 	    
 	    console.log("$scope.apiFiles");
 		console.log($scope.apiFiles);

@@ -10,9 +10,14 @@ body {
 }
 
 /*VF Logo*/
-#vf-brand{
+#vf-brand {
   padding: 2.5px 0 0 0;
   margin-right: 20px;
+}
+
+/**/
+.go-spec-message {
+  text-align: justify;
 }
 
 /* Everything but the container gets side spacing for mobile first views */

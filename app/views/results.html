@@ -1,155 +1,159 @@
-
-<div class="jumbotron">
-	<h2>Validation Results</h2>
-	<span>Below is the detailed info of the validation results of the <strong>Kaltura API response</strong> vs <strong>XML Specification</strong> provided to the system :</span>
-
-	<!-- LEGEND -->
-	<div class="panel panel-warning code-reference">
-		<!-- Default panel contents -->
-		<div class="panel-heading"><strong>Codes Reference</strong></div>
-		<table class="table table-hover">
-			<tr>
-				<td><h5 class="status-container"><span class="status-indicator label label-success">OK</span></h5></td>
-				<td>Field present either in Ingest or API Response</td>
-			</tr>
-			<tr>
-				<td><h5 class="status-container"><span class="status-indicator label label-danger">NOK</span></h5></td>
-				<td>Field <strong>NOT</strong> present in Ingest file or API Response</td>
-			</tr>
-			<tr>
-				<td><h5 class="status-container"><span class="status-indicator label label-warning">M&NR</span></h5></td>
-				<td>Field missing but not mandatory, according to Specification file and asset type</td>
-			</tr>
-			<tr>
-				<td><h5 class="status-container"><span class="status-indicator label label-warning">AFNS</span></h5></td>
-				<td>Field found in API Response, but <strong>NOT</strong> specified in Specification file</td>
-			</tr>
-			<tr>
-				<td><h5 class="status-container"><span class="status-indicator label label-danger">NIS</span></h5></td>
-				<td>Field present in API Response, but <strong>NOT</strong> in Specification file</td>
-			</tr>
-		</table>
-	</div>
+<div ng-if="!isSpecLoaded" class="jumbotron go-spec-message">
+	<h2>There is no Specification file loaded in the system. Please, <a href="#/"> Go to the Spec section</a>, and Upload one, to continue to this section.</h2>
 </div>
+<div ng-show="isSpecLoaded">
+	<div class="jumbotron">
+		<h2>Validation Results</h2>
+		<span>Below is the detailed info of the validation results of the <strong>Kaltura API response</strong> vs <strong>XML Specification</strong> provided to the system :</span>
 
-<!-- SPEC TYPE SECTION, AND SEARCH BOX -->
-<div ng-show="allowResults">
-	<div class="input-group pull-left" style="width: 100px">
-		<span class="input-group-addon"><strong>Spec Type: </strong>  {{specType}}</span>
-		<span class="input-group-addon" ng-if="resultType === 'INGEST' && specType === 'VOD'"><strong>Asset Type: </strong>  {{vodAssetType}}</span>
+		<!-- LEGEND -->
+		<div class="panel panel-warning code-reference">
+			<!-- Default panel contents -->
+			<div class="panel-heading"><strong>Codes Reference</strong></div>
+			<table class="table table-hover">
+				<tr>
+					<td><h5 class="status-container"><span class="status-indicator label label-success">OK</span></h5></td>
+					<td>Field present either in Ingest or API Response</td>
+				</tr>
+				<tr>
+					<td><h5 class="status-container"><span class="status-indicator label label-danger">NOK</span></h5></td>
+					<td>Field <strong>NOT</strong> present in Ingest file or API Response</td>
+				</tr>
+				<tr>
+					<td><h5 class="status-container"><span class="status-indicator label label-warning">M&NR</span></h5></td>
+					<td>Field missing but not mandatory, according to Specification file and asset type</td>
+				</tr>
+				<tr>
+					<td><h5 class="status-container"><span class="status-indicator label label-warning">AFNS</span></h5></td>
+					<td>Field found in API Response, but <strong>NOT</strong> specified in Specification file</td>
+				</tr>
+				<tr>
+					<td><h5 class="status-container"><span class="status-indicator label label-danger">NIS</span></h5></td>
+					<td>Field present in API Response, but <strong>NOT</strong> in Specification file</td>
+				</tr>
+			</table>
+		</div>
 	</div>
 
-	<div id="search-group" class="input-group col-sm-4 pull-right">
-		<input id="searchField" type="text" class="form-control" placeholder="Search for..." ng-model="searchField">
-		<span class="input-group-btn">
-			<button class="btn btn-default" type="button" ng-click="focusOnSearchField()">
-				<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-			</button>
-		</span>
+	<!-- SPEC TYPE SECTION, AND SEARCH BOX -->
+	<div ng-show="allowResults">
+		<div class="input-group pull-left" style="width: 100px">
+			<span class="input-group-addon"><strong>Spec Type: </strong>  {{specType}}</span>
+			<span class="input-group-addon" ng-if="resultType === 'INGEST' && specType === 'VOD'"><strong>Asset Type: </strong>  {{vodAssetType}}</span>
+		</div>
+
+		<div id="search-group" class="input-group col-sm-4 pull-right">
+			<input id="searchField" type="text" class="form-control" placeholder="Search for..." ng-model="searchField">
+			<span class="input-group-btn">
+				<button class="btn btn-default" type="button" ng-click="focusOnSearchField()">
+					<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+				</button>
+			</span>
+		</div>
 	</div>
-</div>
 
-<!-- RESULTS VIEW FOR API RESPONSE VALIDATION OF VOD & EPG ASSETS -->
+	<!-- RESULTS VIEW FOR API RESPONSE VALIDATION OF VOD & EPG ASSETS -->
 
-<div ng-if="resultType === 'API'" class="asset-class-group">
-	<div class="panel panel-info">
-		<!-- Default panel contents -->
-		<div class="panel-heading">Kaltura API response vs XML Specification</div>
-		<table class="table table-hover">
-			<thead>
-			  <tr>
-			    <th>API Field</th>
-			    <th>Correspondent in Spec</th>
-			    <th>Type</th>
-			    <th>Status</th>
-			  </tr>
-			</thead>
-			<tbody>
-			  <tr ng-repeat="result in validationResults | orderBy:'+type' | filter:searchField">
-			  	<td>{{result.field}}</td>
-			  	<td>{{result.specField}}</td>
-			  	<td>{{result.type}}</td>
-			    <td class="col-sm-2">
-			    	<h4 class="status-container"><span class="status-indicator label" ng-class="fieldStatusClass(result.status)">{{result.status}}</span></h4>
-			    </td>
-			  </tr>
-			</tbody>
-		</table>
+	<div ng-if="resultType === 'API'" class="asset-class-group">
+		<div class="panel panel-info">
+			<!-- Default panel contents -->
+			<div class="panel-heading">Kaltura API response vs XML Specification</div>
+			<table class="table table-hover">
+				<thead>
+				  <tr>
+				    <th>API Field</th>
+				    <th>Correspondent in Spec</th>
+				    <th>Type</th>
+				    <th>Status</th>
+				  </tr>
+				</thead>
+				<tbody>
+				  <tr ng-repeat="result in validationResults | orderBy:'+type' | filter:searchField">
+				  	<td>{{result.field}}</td>
+				  	<td>{{result.specField}}</td>
+				  	<td>{{result.type}}</td>
+				    <td class="col-sm-2">
+				    	<h4 class="status-container"><span class="status-indicator label" ng-class="fieldStatusClass(result.status)">{{result.status}}</span></h4>
+				    </td>
+				  </tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
-</div>
 
-<!-- RESULTS VIEW FOR INGEST FILE VALIDATION OF VOD ASSETS -->
+	<!-- RESULTS VIEW FOR INGEST FILE VALIDATION OF VOD ASSETS -->
 
-<div ng-if="resultType === 'INGEST' && specType === 'VOD'" class="asset-class-group">
-	<div ng-repeat="(assetClass, resultsArray) in validationResults">
-		<div class="table-container" ng-if="assetClass !== 'type'">
-			<div class="panel panel-info">
-				<!-- Default panel contents -->
-				<div class="panel-heading">
-					<h4>{{assetClass}}</h4>
-					<pre id="missing-notification" ng-if="isResultsArrayEmpty(resultsArray)"> <strong> This Asset Class is not present in the ingest file.</strong></pre>
+	<div ng-if="resultType === 'INGEST' && specType === 'VOD'" class="asset-class-group">
+		<div ng-repeat="(assetClass, resultsArray) in validationResults">
+			<div class="table-container" ng-if="assetClass !== 'type'">
+				<div class="panel panel-info">
+					<!-- Default panel contents -->
+					<div class="panel-heading">
+						<h4>{{assetClass}}</h4>
+						<pre id="missing-notification" ng-if="isResultsArrayEmpty(resultsArray)"> <strong> This Asset Class is not present in the ingest file.</strong></pre>
+					</div>
+
+					<table ng-if="!isResultsArrayEmpty(resultsArray)" class="table table-hover">
+						<thead>
+						  <tr>
+						    <th>Ingest Field</th>
+						    <th>Type</th>
+						    <th>Status</th>
+						  </tr>
+						</thead>
+						<tbody>
+						  <tr ng-repeat="result in resultsArray | orderBy:'+type' | filter:searchField">
+						  	<td>{{result.field}}</td>
+						  	<td>{{result.type}}</td>
+						    <td class="col-sm-2">
+						    	<h4 class="status-container"><span class="status-indicator label" ng-class="fieldStatusClass(result.status)">{{result.status}}</span></h4>
+						    </td>
+						  </tr>
+						</tbody>
+					</table>
 				</div>
-
-				<table ng-if="!isResultsArrayEmpty(resultsArray)" class="table table-hover">
-					<thead>
-					  <tr>
-					    <th>Ingest Field</th>
-					    <th>Type</th>
-					    <th>Status</th>
-					  </tr>
-					</thead>
-					<tbody>
-					  <tr ng-repeat="result in resultsArray | orderBy:'+type' | filter:searchField">
-					  	<td>{{result.field}}</td>
-					  	<td>{{result.type}}</td>
-					    <td class="col-sm-2">
-					    	<h4 class="status-container"><span class="status-indicator label" ng-class="fieldStatusClass(result.status)">{{result.status}}</span></h4>
-					    </td>
-					  </tr>
-					</tbody>
-				</table>
 			</div>
 		</div>
 	</div>
-</div>
 
-<!-- RESULTS VIEW FOR INGEST FILE VALIDATION OF EPG ASSETS -->
+	<!-- RESULTS VIEW FOR INGEST FILE VALIDATION OF EPG ASSETS -->
 
-<div ng-if="resultType === 'INGEST' && specType === 'EPG'" class="asset-class-group">
-	<div ng-repeat="(eventTitle, resultsArray) in validationResults">
-		<div class="table-container" ng-if="eventTitle !== 'type'">
-			<div class="panel panel-info">
-				<!-- Default panel contents -->
-				<div class="panel-heading">
-				<h4>{{(eventTitle.split("|"))[0]}}</h4>
+	<div ng-if="resultType === 'INGEST' && specType === 'EPG'" class="asset-class-group">
+		<div ng-repeat="(eventTitle, resultsArray) in validationResults">
+			<div class="table-container" ng-if="eventTitle !== 'type'">
+				<div class="panel panel-info">
+					<!-- Default panel contents -->
+					<div class="panel-heading">
+					<h4>{{(eventTitle.split("|"))[0]}}</h4>
+					</div>
+					<div class="panel-body">
+
+						<ul class="desc-box list-group">
+						  <li class="list-group-item"><span><strong>Id: </strong>{{(eventTitle.split("|"))[1]}}</span></li>
+						  <li class="list-group-item"><span><strong>Type: </strong>{{(eventTitle.split("|"))[2]}}</span></li>
+						</ul>
+
+						<pre id="missing-notification" ng-if="isResultsArrayEmpty(resultsArray)"> <strong> This Asset Class is not present in the ingest file.</strong></pre>
+					</div>
+
+					<table ng-if="!isResultsArrayEmpty(resultsArray)" class="table table-hover">
+						<thead>
+						  <tr>
+						    <th>Ingest Field</th>
+						    <th>Status</th>
+						  </tr>
+						</thead>
+						<tbody>
+						  <tr ng-repeat="result in resultsArray | orderBy:'+field' | filter:searchField">
+						  	<td><span style="vertical-align: middle;">{{result.field}}</span></td>
+						    <td class="col-sm-2">
+						    	<h4 class="status-container"><span class="status-indicator label" ng-class="fieldStatusClass(result.status)">{{result.status}}</span></h4>
+						    </td>
+						  </tr>
+						</tbody>
+					</table>
 				</div>
-				<div class="panel-body">
-
-					<ul class="desc-box list-group">
-					  <li class="list-group-item"><span><strong>Id: </strong>{{(eventTitle.split("|"))[1]}}</span></li>
-					  <li class="list-group-item"><span><strong>Type: </strong>{{(eventTitle.split("|"))[2]}}</span></li>
-					</ul>
-
-					<pre id="missing-notification" ng-if="isResultsArrayEmpty(resultsArray)"> <strong> This Asset Class is not present in the ingest file.</strong></pre>
-				</div>
-
-				<table ng-if="!isResultsArrayEmpty(resultsArray)" class="table table-hover">
-					<thead>
-					  <tr>
-					    <th>Ingest Field</th>
-					    <th>Status</th>
-					  </tr>
-					</thead>
-					<tbody>
-					  <tr ng-repeat="result in resultsArray | orderBy:'+field' | filter:searchField">
-					  	<td><span style="vertical-align: middle;">{{result.field}}</span></td>
-					    <td class="col-sm-2">
-					    	<h4 class="status-container"><span class="status-indicator label" ng-class="fieldStatusClass(result.status)">{{result.status}}</span></h4>
-					    </td>
-					  </tr>
-					</tbody>
-				</table>
 			</div>
 		</div>
 	</div>
-</div>
+</div> <!-- End of control container -->

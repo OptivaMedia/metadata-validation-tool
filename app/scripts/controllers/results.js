@@ -27,6 +27,8 @@ angular.module('xmlvsApiValidationApp')
 		console.log($scope.validationResults);
 
 		$scope.specObj = specService.getSpec();
+		// Control flag to show or hide upload section.
+		$scope.isSpecLoaded = $.isEmptyObject(specService.getSpec()) ? false : true;
 		$scope.apiResponseObj = apiResponseService.getApiResponse();
 		$scope.ingestObj = ingestService.getIngestObj();
 		$scope.searchField = "";

@@ -31,6 +31,8 @@ angular.module('xmlvsApiValidationApp')
 		console.log("ENTRA-init()");
 		// Getting the uploadedFiles array
 		$scope.files = ingestService.getIngestFilesArray();
+		// Control flag to show or hide upload section.
+		$scope.isSpecLoaded = $.isEmptyObject(specService.getSpec()) ? false : true;
 		$scope.ingestFileUploaded = $.isEmptyObject(ingestService.getIngestObj()) ? false : true;
 	    // Error alerts enabled in initial state
 	    $scope.enableErrorAlerts = true;

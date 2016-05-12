@@ -1,31 +1,35 @@
 <div class="container">
-  
-	<div class="jumbotron">    
-		<h2>Upload your API response file (.json):</h2>
+  	<div ng-if="!isSpecLoaded" class="jumbotron go-spec-message">
+		<h2>There is no Specification file loaded in the system. Please, <a href="#/"> Go to the Spec section</a>, and Upload one, to continue to this section.</h2>
 	</div>
-	<form name="myApiFileForm">
-		<div name="apiDropbox" ngf-drop ngf-select ng-model="fileApi" class="drop-box" ngf-drag-over-class="'dragover'"
-		 ngf-multiple="true" ngf-allow-dir="true" ngf-accept="application/json" ngf-pattern="'.json'">
-			Drop .json files here, or click to upload
+	<div ng-show="isSpecLoaded">
+		<div class="jumbotron">    
+			<h2>Upload your API response file (.json):</h2>
 		</div>
-		
-		<div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+		<form name="myApiFileForm">
+			<div name="apiDropbox" ngf-drop ngf-select ng-model="fileApi" class="drop-box" ngf-drag-over-class="'dragover'"
+			 ngf-multiple="true" ngf-allow-dir="true" ngf-accept="application/json" ngf-pattern="'.json'">
+				Drop .json files here, or click to upload
+			</div>
+			
+			<div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
 
-		<div class="alert alert-danger" ng-show="myApiFileForm.apiDropbox.$error.pattern && enableApiFileErrorAlerts">
-	      <a class="close" aria-label="close" ng-click="removeApiErrorAlerts()">&times;</a>
-	      <strong>Error!</strong> The file you tried to upload does not have a .json extension. Please upload a JSON file.
-	    </div>
+			<div class="alert alert-danger" ng-show="myApiFileForm.apiDropbox.$error.pattern && enableApiFileErrorAlerts">
+		      <a class="close" aria-label="close" ng-click="removeApiErrorAlerts()">&times;</a>
+		      <strong>Error!</strong> The file you tried to upload does not have a .json extension. Please upload a JSON file.
+		    </div>
 
-		<div id="uploaded-file-info" class="alert alert-success" ng-hide="apiFiles.length == 0">
-			<p>File uploaded:</p>
-			<ul>
-				<li ng-repeat="f in apiFiles track by $index" style="font:smaller; list-style-type: none;">
-					<span class="glyphicon glyphicon-file" aria-hidden="true"></span>
-					{{f.name}} {{f.$error}} {{f.$errorParam}}
-	        		<span class="glyphicon glyphicon-remove remove-file-sym" ng-click="deleteFile(f.name)" aria-hidden="true"></span>
-				</li>
-			</ul>
-		</div>
-		<button type="button" class="btn btn-primary btn-lg" ng-hide="apiFiles.length == 0" ng-click="validateApiResponse()">Validate</button>
-	</form>
-</div>
+			<div id="uploaded-file-info" class="alert alert-success" ng-hide="apiFiles.length == 0">
+				<p>File uploaded:</p>
+				<ul>
+					<li ng-repeat="f in apiFiles track by $index" style="font:smaller; list-style-type: none;">
+						<span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+						{{f.name}} {{f.$error}} {{f.$errorParam}}
+		        		<span class="glyphicon glyphicon-remove remove-file-sym" ng-click="deleteFile(f.name)" aria-hidden="true"></span>
+					</li>
+				</ul>
+			</div>
+			<button type="button" class="btn btn-primary btn-lg" ng-hide="apiFiles.length == 0" ng-click="validateApiResponse()">Validate</button>
+		</form>
+	</div>	<!-- End of control container -->
+</div> <!-- End of main container -->
