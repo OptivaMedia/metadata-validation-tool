@@ -9,6 +9,12 @@ body {
   padding: 0;
 }
 
+/*VF Logo*/
+#vf-brand{
+  padding: 2.5px 0 0 0;
+  margin-right: 20px;
+}
+
 /* Everything but the container gets side spacing for mobile first views */
 .header,
 .marketing,
